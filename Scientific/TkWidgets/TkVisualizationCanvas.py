@@ -1,25 +1,30 @@
 # This module defines a 3D wireframe visualization widget
 # for Tk user interfaces.
 #
-# Written by Konrad Hinsen <hinsen@llb.saclay.cea.fr>
-# Last revision: 2005-5-4
+# Written by Konrad Hinsen <konrad.hinsen@cea.fr>
+# Last revision: 2006-5-30
 #
 
-from Tkinter import *
+import Tkinter
 from Canvas import Line
 import string
 from Scientific import N as Numeric
 from Scientific.Geometry import Vector
 from Scientific.Geometry.Transformation import Rotation
 
-"""This module provides a special widget for Tk user interfaces
+"""
+3D wireframe canvas widget for Tk
+
+This module provides a special widget for Tk user interfaces
 which permits the display of 3D wireframe structures with interactive
 manipulation.
 
-Note that this module can become sluggish if two many lines are to
+Note that this widget can become sluggish if two many lines are to
 be displayed. An OpenGL widget should be used for serious visualization
 needs. The advantage of this module is that it requires no special
 graphics libraries in addition to Tk.
+
+@undocumented: PolyPoints3D
 """
 
 class PolyPoints3D:
@@ -52,17 +57,20 @@ class PolyPoints3D:
 
 class PolyLine3D(PolyPoints3D):
 
-    """Multiple connected lines
-
-    Constructor: PolyLine(|points|, **|attr|), where |points| is
-    any sequence of (x, y, z) number triples and |attr| stands for line
-    attributes specified by keyword arguments, which are
-    'width' (an integer) and 'color' (a string whose value is one of
-    the color names defined in Tk). The default is a black line
-    of width 1.
+    """
+    Multiple connected lines
     """
 
     def __init__(self, points, **attr):
+        """
+        @param points: any sequence of (x, y, z) coordinate triples
+        @param attr: line attributes
+
+        @keyword width: line width (default: 1)
+        @type width: C{int}
+        @keyword color: a Tk color name (default: C{"black"})
+        @type color: C{str}
+        """
         PolyPoints3D.__init__(self, points, attr)
 
     _attributes = {'color': 'black',
@@ -84,14 +92,21 @@ class PolyLine3D(PolyPoints3D):
 
 class VisualizationGraphics:
 
-    """Compound graphics object
+    """
+    Compound graphics object
 
-    Constructor: VisualizationGraphics(|objects|), where |objects| is a list
-    whose elements can be instances of the classes PolyLine3D and
-    VisualizationGraphics.
+    @undocumented: boundingBox
+    @undocumented: boundingBoxPlane
+    @undocumented: project
+    @undocumented: scaleAndShift
+    @undocumented: lines
     """
     
     def __init__(self, objects):
+        """
+        @param objects: a list of graphics objects (L{PolyLine3D},
+                        L{VisualizationGraphics})
+        """
         self.objects = objects
 
     def boundingBox(self):
@@ -134,15 +149,10 @@ class VisualizationGraphics:
         return self.objects[item]
 
 
-class VisualizationCanvas(Frame):
+class VisualizationCanvas(Tkinter.Frame):
 
-    """Tk visualization widget
-
-    Constructor: VisualizationCanvas(|master|, |width|, |height|,
-                                     **|attributes|).
-    The arguments have the same meaning as for a standard Tk canvas.
-    The default background color is white and the default font is
-    Helvetica at 10 points.
+    """
+    Tk visualization widget
 
     VisualizationCanvas objects support all operations of Tk widgets.
 
@@ -153,10 +163,20 @@ class VisualizationCanvas(Frame):
     """
     
     def __init__(self, master, width, height, background='white', **attr):
-        apply(Frame.__init__, (self, master), attr)
-        self.canvas = Canvas(self, width=width, height=height,
-                             background=background)
-        self.canvas.pack(fill=BOTH, expand=YES)
+        """
+        @param master: the parent widget
+        @param width: the initial width of the canvas
+        @type width: C{int}
+        @param height: the initial height of the canvas
+        @type height: C{int}
+        @param background: the background color
+        @type background: C{str}
+        @param attr: widget attributes
+        """
+        apply(Tkinter.Frame.__init__, (self, master), attr)
+        self.canvas = Tkinter.Canvas(self, width=width, height=height,
+                                     background=background)
+        self.canvas.pack(fill=Tkinter.BOTH, expand=Tkinter.YES)
         border_w = self.canvas.winfo_reqwidth() - \
                    string.atoi(self.canvas.cget('width'))
         border_h = self.canvas.winfo_reqheight() - \
@@ -211,8 +231,12 @@ class VisualizationCanvas(Frame):
             self.translate = translate
 
     def draw(self, graphics):
-        """Draws the graphics object |graphics|, which can be
-        a PolyLine3D or a VisualizationGraphics object."""
+        """
+        Draw something on the canvas
+
+        @param graphics: the graphics object (L{PolyLine3D},
+                         or L{VisualizationGraphics}) to be drawn
+        """
         self.last_draw = (graphics, )
         self.configure(cursor='watch')
         self.update_idletasks()
@@ -241,7 +265,9 @@ class VisualizationCanvas(Frame):
             apply(self.draw, self.last_draw)
 
     def clear(self, keepscale = 0):
-        "Clears the canvas."
+        """
+        Clear the canvas
+        """
         self.canvas.delete('all')
         if not keepscale:
             self.scale = None
@@ -340,7 +366,7 @@ if __name__ == '__main__':
             del chains[-1]
         return chains
 
-    conf = readCAlphaPositions('myoglobin.pdb')
+    conf = readCAlphaPositions('/Users/hinsen/Desktop/5CYT.pdb')
     colors = ['black', 'red', 'green', 'blue', 'yellow']
     colors = (len(conf)*colors)[:len(conf)]
     objects = []
@@ -348,17 +374,21 @@ if __name__ == '__main__':
         objects.append(PolyLine3D(chain, color=color))
     graphics = VisualizationGraphics(objects)
 
-    window = Frame()
-    window.pack(fill=BOTH, expand=YES)
+    window = Tkinter.Frame()
+    window.pack(fill=Tkinter.BOTH, expand=Tkinter.YES)
 
-    c = VisualizationCanvas(window, "100m", "100m", relief=SUNKEN, border=2)
-    c.pack(side=TOP, fill=BOTH, expand=YES)
+    c = VisualizationCanvas(window, "100m", "100m", relief=Tkinter.SUNKEN,
+                            border=2)
+    c.pack(side=Tkinter.TOP, fill=Tkinter.BOTH, expand=Tkinter.YES)
     c.draw(graphics)
 
-    Button(window, text='Draw',
-           command=lambda o=graphics: c.draw(o)).pack(side=LEFT)
-    Button(window, text='Clear', command=c.clear).pack(side=LEFT)
-    Button(window, text='Redraw', command=c.redraw).pack(side=LEFT)
-    Button(window, text='Quit', command=window.quit).pack(side=RIGHT)
+    Tkinter.Button(window, text='Draw',
+                   command=lambda o=graphics: c.draw(o)).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Clear',
+                   command=c.clear).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Redraw',
+                   command=c.redraw).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Quit',
+                   command=window.quit).pack(side=Tkinter.RIGHT)
 
     window.mainloop()
