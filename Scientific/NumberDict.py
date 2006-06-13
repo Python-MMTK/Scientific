@@ -4,13 +4,18 @@
 # indices. Non-existent elements default to zero. Global operations
 # are addition, subtraction, and multiplication/division by a scalar.
 #
-# Written by Konrad Hinsen <hinsen@llb.saclay.cea.fr>
-# last revision: 2006-6-12
+# Written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
+# last revision: 2006-6-13
 #
+
+"""
+Dictionary storing numerical values
+"""
 
 class NumberDict(dict):
 
-    """Dictionary storing numerical values
+    """
+    Dictionary storing numerical values
 
     Constructor: NumberDict()
 

@@ -2,17 +2,14 @@
 # It supports only elementary line plots at the moment.
 # See the example at the end for documentation...
 #
-# Written by Konrad Hinsen <khinsen@cea.fr>
+# Written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
 # With contributions from RajGopal Srinivasan <raj@cherubino.med.jhmi.edu>
-# Last revision: 2005-9-5
+# Last revision: 2006-6-12
 #
 
-from Tkinter import *
-from Scientific import N as Numeric
-from Canvas import Line, CanvasText
-import string
+"""
+Plot widget for Tk user interfaces
 
-"""This module provides a plot widget for Tk user interfaces.
 A plot widget acts like a canvas for special graphics objects
 that represent curves shown by lines or markers.
 
@@ -20,6 +17,11 @@ Note that this module is not meant to replace a full-featured
 plot program. It was designed to permit the simple integration of
 plots into Tk-based user interfaces.
 """
+
+import Tkinter
+from Scientific import N as Numeric
+from Canvas import Line, CanvasText
+import string
 
 class PolyPoints:
 
@@ -50,24 +52,24 @@ class PolyPoints:
 
 class PolyLine(PolyPoints):
 
-    """Multiple connected lines
+    """
+    Multiple connected lines
 
-    Constructor: PolyLine(|points|, **|attr|)
-
-    Arguments:
-
-    |points| -- any sequence of (x, y) number pairs
-
-    |attr| -- line attributes specified by keyword arguments:
-
-      * 'width': the line width (default: 1)
-      * 'color': a string whose value is one of the color names defined in Tk
-                 (default: "black")
-      * 'stipple': a string whose value is the name of a bitmap defined in Tk,
-                   or 'None' for no bitmap (default: 'None')
+    @undocumented: draw
     """
 
     def __init__(self, points, **attr):
+        """
+        @param points: any sequence of (x, y) number pairs
+        @param attr: line attributes
+
+        @keyword width: the line width (default: 1)
+        @keyword color: a string whose value is one of the
+                        color names defined in Tk (default: C{"black"})
+        @keyword stipple: a string whose value is the name of a bitmap
+                          defined in Tk, or C{None} for no bitmap
+                          (default: C{None})
+        """
         PolyPoints.__init__(self, points, attr)
 
     _attributes = {'color': 'black',
@@ -91,24 +93,23 @@ class PolyLine(PolyPoints):
 
 class VerticalLine(PolyLine):
 
-    """A vertical line
-
-    Constructor: VerticalLine(|xpos|, **|attr|)
-
-    Arguments:
-
-    |xpos| -- the x coordinate of the line
-
-    |attr| -- line attributes specified by keyword arguments:
-
-      * 'width': the line width (default: 1)
-      * 'color': a string whose value is one of the color names defined in Tk
-                 (default: "black")
-      * 'stipple': a string whose value is the name of a bitmap defined in Tk,
-                   or 'None' for no bitmap (default: 'None')
+    """
+    A vertical line
     """
 
     def __init__(self, xpos, **attr):
+        """
+        @param xpos: the x coordinate of the line
+        @type xpos: C{float}
+        @param attr: line attributes
+
+        @keyword width: the line width (default: 1)
+        @keyword color: a string whose value is one of the
+                        color names defined in Tk (default: C{"black"})
+        @keyword stipple: a string whose value is the name of a bitmap
+                          defined in Tk, or C{None} for no bitmap
+                          (default: C{None})
+        """
         apply(PolyLine.__init__, (self, 2*[(xpos, 0.)]), attr)
 
     def draw(self, canvas, bbox):
@@ -121,25 +122,23 @@ class VerticalLine(PolyLine):
 
 class HorizontalLine(PolyLine):
 
-    """A horizontal line
-
-    Constructor: HorizontalLine(|ypos|, **|attr|)
-
-    Arguments:
-
-    |ypos| -- the y coordinate of the line
-
-    |attr| -- line attributes specified by keyword arguments:
-
-      * 'width': the line width (default: 1)
-      * 'color': a string whose value is one of the color names defined in Tk
-                 (default: "black")
-      * 'stipple': a string whose value is the name of a bitmap defined in Tk,
-                   or 'None' for no bitmap (default: 'None')
+    """
+    A horizontal line
     """
 
     def __init__(self, ypos, **attr):
-        print ypos
+        """
+        @param ypos: the y coordinate of the line
+        @type ypos: C{float}
+        @param attr: line attributes
+
+        @keyword width: the line width (default: 1)
+        @keyword color: a string whose value is one of the
+                        color names defined in Tk (default: C{"black"})
+        @keyword stipple: a string whose value is the name of a bitmap
+                          defined in Tk, or C{None} for no bitmap
+                          (default: C{None})
+        """
         apply(PolyLine.__init__, (self, 2*[(0., ypos)]), attr)
 
     def draw(self, canvas, bbox):
@@ -152,29 +151,26 @@ class HorizontalLine(PolyLine):
 
 class PolyMarker(PolyPoints):
 
-    """Series of markers
-
-    Constructor: PolyPoints(|points|, **|attr|)
-
-    Arguments:
-
-    |points| -- any sequence of (x, y) number pairs
-
-    |attr| marker attributes specified by keyword arguments:
-
-    * 'width': the line width for drawing the marker (default: 1)
-    * 'color': a string whose value is one of the color names defined in Tk,
-               defines the color of the line forming the marker
-               (default: black)
-    * 'fillcolor': a string whose value is one of the color names defined
-                   in Tk, defines the color of the interior of the marker
-                   (default: black)
-    * 'marker': one of 'circle' (default), 'dot', 'square', 'triangle',
-                'triangle_down', 'cross', 'plus'
+    """
+    Series of markers
     """
 
     def __init__(self, points, **attr):
+        """
+        @param points: any sequence of (x, y) number pairs
+        @param attr: marker attributes
 
+        @keyword width: the line width for drawing the marker (default: 1)
+        @keyword color: a string whose value is one of the color names
+                        defined in Tk, defines the color of the line forming
+                        the marker (default: C{"black"})
+        @keyword fillcolor: a string whose value is one of the color names
+                            defined in Tk, defines the color of the interior
+                            of the marker (default: C{"black"})
+        @keyword marker: one of C{'circle'} (default), C{'dot'}, C{'square'},
+                         C{'triangle'}, C{'triangle_down'}, C{'cross'},
+                         C{'plus'}
+        """
         PolyPoints.__init__(self, points, attr)
 
     _attributes = {'color': 'black',
@@ -269,17 +265,21 @@ class PolyMarker(PolyPoints):
 
 class PlotGraphics:
 
-    """Compound graphics object
+    """
+    Compound graphics object
 
-    Constructor: PlotGraphics(|objects|)
-
-    Arguments:
-
-    |objects| -- a list whose elements can be instances of the classes
-                 PolyLine, PolyMarker, and PlotGraphics.
+    @undocumented: boundingBox
+    @undocumented: scaleAndShift
+    @undocumented: draw
+    @undocumented: writeToFile
     """
     
     def __init__(self, objects):
+        """
+        @param objects: a list of graphics objects (L{PolyLine},
+                        L{PolyMarker}, L{PlotGraphics})
+        @type objects: C{list}
+        """
         self.objects = objects
 
     def boundingBox(self):
@@ -311,37 +311,43 @@ class PlotGraphics:
                 file.write(separator)
             data = o.writeToFile(file, separator)
 
-class PlotCanvas(Frame):
+class PlotCanvas(Tkinter.Frame):
 
-    """Tk plot widget
-
-    Constructor: PlotCanvas(|master|, |width|, |height|, **|attributes|).
-
-    The arguments have the same meaning as for a standard Tk canvas.
-    The default background color is white and the default font is
-    Helvetica at 10 points.
+    """
+    Tk plot widget
 
     PlotCanvas objects support all operations of Tk widgets.
-
-    There are two attributes in addition to the standard Tk attributes:
-
-    |zoom| -- a logical variable that indicates whether interactive
-              zooming (using the left mouse button) is enabled; the
-              default is 0 (no zoom)
-
-    |select| -- enables the user to select a range along the x axis
-                by dragging the mouse (with the left button pressed)
-                in the area *under* the x axis. If |select| is 0,
-                no selection is possible. Otherwise the value of |select|
-                must be a callable object that is called whenever the
-                selection changes, with a single argument that can be
-                None (no selection) or a tuple containing two
-                x values.
     """
     
     def __init__(self, master, width, height, background='white',
                  font="-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
                  **attr):
+        """
+        @param master: the parent widget
+        @param width: the initial width of the canvas
+        @type width: C{int}
+        @param height: the initial height of the canvas
+        @type height: C{int}
+        @param background: the background color
+        @type background: C{str}
+        @param font: the font used for the axis labels
+        @type font: C{str}
+        @param attr: widget attributes
+        
+        @keyword zoom: a flag that indicates whether interactive
+                       zooming (using the left mouse button) is enabled; the
+                       default is C{False} (no zoom)
+        @type zoom: C{bool}
+        
+        @keyword select: enables the user to select a range along the x axis
+                         by dragging the mouse (with the left button pressed)
+                         in the area B{under} the x axis. If select is 0,
+                         no selection is possible. Otherwise the value of
+                         select must be a callable object that is called
+                         whenever the selection changes, with a single
+                         argument that can be C{None} (no selection) or
+                         a tuple containing two x values.
+        """
         self.zoom = 0
         if attr.has_key('zoom'):
             self.zoom = attr['zoom']
@@ -350,10 +356,10 @@ class PlotCanvas(Frame):
         if attr.has_key('select'):
             self.selectfn = attr['select']
             del attr['select']
-        apply(Frame.__init__, (self, master), attr)
-        self.canvas = Canvas(self, width=width, height=height,
-                             background=background)
-        self.canvas.pack(fill=BOTH, expand=YES)
+        apply(Tkinter.Frame.__init__, (self, master), attr)
+        self.canvas = Tkinter.Canvas(self, width=width, height=height,
+                                     background=background)
+        self.canvas.pack(fill=Tkinter.BOTH, expand=Tkinter.YES)
         border_w = self.canvas.winfo_reqwidth() - \
                    string.atoi(self.canvas.cget('width'))
         border_h = self.canvas.winfo_reqheight() - \
@@ -365,7 +371,7 @@ class PlotCanvas(Frame):
             self.canvas.bind('<Button-1>', self._mousePressed)
             self.canvas.bind('<B1-Motion>', self._mouseMotion)
             self.canvas.bind('<ButtonRelease-1>', self._mouseRelease)
-        self.popup_menu = Menu(self.canvas, tearoff=0)
+        self.popup_menu = Tkinter.Menu(self.canvas, tearoff=0)
         self.label = None
         self.canvas.bind('<Button-2>', self._showValue)
         self.canvas.bind('<ButtonRelease-2>', self._hideValue)
@@ -400,10 +406,10 @@ class PlotCanvas(Frame):
         if font is not None:
             bg = self.canvas.cget('background')
             try:
-                item = CanvasText(self.canvas, 0, 0, anchor=NW,
+                item = CanvasText(self.canvas, 0, 0, anchor=Tkinter.NW,
                                   text='0', fill=bg, font=font)
                 self.canvas.delete(item)
-            except TclError:
+            except Tkinter.TclError:
                 font = None
         return font
 
@@ -416,15 +422,15 @@ class PlotCanvas(Frame):
         self.plotbox_origin = Numeric.array([xo, yo])
 
     def draw(self, graphics, xaxis = None, yaxis = None):
-        """Draws the graphics object |graphics|, which can be
-        a PolyLine, PolyMarker, or PlotGraphics object. The
-        arguments |xaxis| and |yaxis| specify how axes are
-        drawn: 'None' means that no axis is drawn and the graphics
-        objects are scaled to fill the canvas optimally. '"automatic"'
-        means that the axis is drawn and a suitable value range is
-        determined automatically. A sequence of two numbers means
-        that the axis is drawn and the value range is the interval
-        specified by the two numbers.
+        """
+        Draw something on the canvas
+
+        @param graphics: the graphics object (L{PolyLine}, L{PolyMarker},
+                         or L{PlotGraphics}) to be drawn
+        @param xaxis: C{None} (no x-axis), C{"automatic"} (automatic scaling),
+                      or a pair (x1, x2) defining the range of the x-axis
+        @param yaxis: C{None} (no y-axis), C{"automatic"} (automatic scaling),
+                      or a pair (y1, y2) defining the range of the y-axis
         """
         self.last_draw = (graphics, xaxis, yaxis)
         p1, p2 = graphics.boundingBox()
@@ -500,7 +506,7 @@ class PlotCanvas(Frame):
 
     def _drawAxes(self, canvas, xaxis, yaxis,
                   bb1, bb2, scale, shift, xticks, yticks):
-        dict = {'anchor': N, 'fill': 'black'}
+        dict = {'anchor': Tkinter.N, 'fill': 'black'}
         if self.font is not None:
             dict['font'] = self.font
         if xaxis is not None:
@@ -520,7 +526,7 @@ class PlotCanvas(Frame):
                         apply(CanvasText, (self.canvas, p[0], p[1]), dict)
                 text = 0
 
-        dict['anchor'] = E
+        dict['anchor'] = Tkinter.E
         if yaxis is not None:
             lower, upper = yaxis
             text = 1
@@ -572,7 +578,7 @@ class PlotCanvas(Frame):
 
     def _textBoundingBox(self, text):
         bg = self.canvas.cget('background')
-        dict = {'anchor': NW, 'text': text, 'fill': bg}
+        dict = {'anchor': Tkinter.NW, 'text': text, 'fill': bg}
         if self.font is not None:
             dict['font'] = self.font
         item = apply(CanvasText, (self.canvas, 0., 0.), dict)
@@ -581,14 +587,18 @@ class PlotCanvas(Frame):
         return bb
 
     def clear(self):
-        "Clears the canvas."
+        """
+        Clear the canvas
+        """
         self.canvas.delete('all')
         self.rectangle = None
         self.rubberband = None
         self.selected_range = None
 
     def redraw(self):
-        "Redraws the last canvas contents."
+        """
+        Redraw the most recent canvas contents
+        """
         if self.last_draw is not None:
             apply(self.draw, self.last_draw)
 
@@ -663,9 +673,13 @@ class PlotCanvas(Frame):
         self.mouse_state = 0
 
     def select(self, range):
-        """Shows the given |range| as highlighted. |range| can be
-        None (no selection) or a sequence of two values on the
-        x-axis."""
+        """
+        Highlight a range on the x-axis
+
+        @param range: the range on the x-axis to be highlighted. It can be
+                      C{None} (no selection) or a sequence of two values on the
+                      x-axis.
+        """
         if range is None:
             if self.selected_range is not None:
                 self.canvas.delete(self.rectangle)
@@ -728,8 +742,8 @@ class PlotCanvas(Frame):
 
 if __name__ == '__main__':
 
-    window = Frame()
-    window.pack(fill=BOTH, expand=YES)
+    window = Tkinter.Frame()
+    window.pack(fill=Tkinter.BOTH, expand=Tkinter.YES)
 
     data1 = 2.*Numeric.pi*Numeric.arange(200)/200.
     data1.shape = (100, 2)
@@ -750,17 +764,20 @@ if __name__ == '__main__':
         select(value)
         print value
 
-    c = PlotCanvas(window, "300", "200", relief=SUNKEN, border=2,
+    c = PlotCanvas(window, "300", "200", relief=Tkinter.SUNKEN, border=2,
                    zoom = 1, select = display)
-    c.pack(side=TOP, fill=BOTH, expand=YES)
+    c.pack(side=Tkinter.TOP, fill=Tkinter.BOTH, expand=Tkinter.YES)
 
     def select(value):
         c.select(value)
 
-    Button(window, text='Draw', command=lambda o=object:
-           c.draw(o, 'automatic', 'automatic')).pack(side=LEFT)
-    Button(window, text='Clear', command=c.clear).pack(side=LEFT)
-    Button(window, text='Redraw', command=c.redraw).pack(side=LEFT)
-    Button(window, text='Quit', command=window.quit).pack(side=RIGHT)
+    Tkinter.Button(window, text='Draw', command=lambda o=object:
+                   c.draw(o, 'automatic', 'automatic')).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Clear',
+                   command=c.clear).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Redraw',
+                   command=c.redraw).pack(side=Tkinter.LEFT)
+    Tkinter.Button(window, text='Quit',
+                   command=window.quit).pack(side=Tkinter.RIGHT)
 
     window.mainloop()
