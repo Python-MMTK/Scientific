@@ -161,7 +161,7 @@ if netcdf_prefix is not None:
     headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",
-       version = pkginfo.__version__,
+       version = "2.6.1",
        description = "Various Python modules for scientific computing",
        long_description = 
 """ScientificPython is a collection of Python modules that are useful
