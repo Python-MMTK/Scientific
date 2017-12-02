@@ -10,6 +10,7 @@ from glob import glob
 
 from distutils.core import Extension
 from distutils.command.install_headers import install_headers
+from Cython.Build import cythonize
 
 
 use_cython = True
