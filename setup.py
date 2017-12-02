@@ -3,6 +3,7 @@
 import os
 import sys
 import platform
+import pkginfo
 import numpy.distutils.misc_util
 
 from setuptools import setup
