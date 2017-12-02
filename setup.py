@@ -1,26 +1,21 @@
 #!/usr/bin/env python
 
-from distutils.core import setup, Extension
-from distutils.command.install_headers import install_headers
-import os, sys, platform
+import os
+import sys
+import platform
+import pkginfo
+import numpy.distutils.misc_util
+
+from setuptools import setup
 from glob import glob
 
-class Dummy:
-    pass
-pkginfo = Dummy()
-execfile('Scientific/__pkginfo__.py', pkginfo.__dict__)
+from distutils.core import Extension
+from distutils.command.install_headers import install_headers
+from Cython.Build import cythonize
 
-# Check for Cython and use it if the environment variable
-# COMPILE_CYTHON is set to a non-zero value.
-use_cython = int(os.environ.get('COMPILE_CYTHON', '0')) != 0
-if use_cython:
-    try:
-        from Cython.Build import cythonize
-        use_cython = True
-    except ImportError:
-        use_cython = False
 
-src_ext = 'pyx' if use_cython else 'c'
+use_cython = True
+src_ext = 'pyx'
 
 cmdclass = {}
 extra_compile_args = ["-DNUMPY=1"]
@@ -29,7 +24,6 @@ data_files = []
 scripts = []
 options = {}
 
-import numpy.distutils.misc_util
 numpy_include = numpy.distutils.misc_util.get_numpy_include_dirs()
 
 math_libraries = []
@@ -167,7 +161,7 @@ if netcdf_prefix is not None:
     headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",
-       version = pkginfo.__version__,
+       version = "2.6.1",
        description = "Various Python modules for scientific computing",
        long_description = 
 """ScientificPython is a collection of Python modules that are useful
@@ -191,4 +185,8 @@ line plots and 3D wireframe models.""",
  
        cmdclass = cmdclass,
        options = options,
+       
+       install_requies=[
+           'numpy>=1.6,<=1.8',
+       ],
        )
