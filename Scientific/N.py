@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from numpy import array, logical_and
+from numpy import array, logical_and, sum, arange, zeros, sqrt
 from numpy import array_equal as equal
 from numpy import ndarray as ArrayType
 
