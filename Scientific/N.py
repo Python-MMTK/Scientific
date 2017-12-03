@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from numpy import array
+from numpy import array, logical_and
 
 def int_sum(a, axis=0):
     return np.add.reduce(a, axis)
