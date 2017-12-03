@@ -12,6 +12,8 @@ cdef extern from "math.h":
 import numpy as np
 cimport numpy as np
 
+from __future__ import division
+
 #
 # For efficiency reasons (calling __init__ makes the creation of a vector
 # rather expensive), most of the operations happen in class "vector", which
@@ -132,12 +134,10 @@ cdef class vector:
             vector.set(result, v1.xv*y, v1.yv*y, v1.zv*y)
             return result
 
-    def __div__(vector self, double factor):
+    def __truediv__(vector self, double factor):
         result = vector()
         vector.set(result, self.xv/factor, self.yv/factor, self.zv/factor)
         return result
-
-    __truediv__ = __div__
 
     def __richcmp__(vector self, other, int op):
         if op != 2 and op != 3:
