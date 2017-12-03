@@ -34,6 +34,9 @@ class ARModelTest(unittest.TestCase):
         
         sum_poles = N.sum(poles)
         real_poles = sum_poles.real
+        
+        print(sum_poles)
+        print(real_poles)
 
         raise Exception()
 
