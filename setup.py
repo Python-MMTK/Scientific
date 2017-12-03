@@ -5,6 +5,7 @@ import sys
 import platform
 import pkginfo
 import numpy.distutils.misc_util
+import textwrap
 
 from setuptools import setup
 from glob import glob
@@ -63,17 +64,19 @@ if netcdf_prefix is None:
         netcdf_prefix = None
 
 if netcdf_prefix is None:
-    print "netCDF not found, the netCDF module will not be built!"
+    print("netCDF not found, the netCDF module will not be built!")
     if sys.platform != 'win32':
-        print "If netCDF is installed somewhere on this computer,"
-        print "please set NETCDF_PREFIX to the path where"
-        print "include/netcdf.h and lib/netcdf.a are located"
-        print "and re-run the build procedure."
+        print(textwrap.dedent(""""
+            If netCDF is installed somewhere on this computer,
+            please set NETCDF_PREFIX to the path where
+            include/netcdf.h and lib/netcdf.a are located
+            and re-run the build procedure.
+            """).strip())
     ext_modules = []
 else:
     if sys.platform == 'win32':
         if netcdf_dll is None:
-            print "Option --netcdf_dll is missing"
+            print("Option --netcdf_dll is missing")
             raise SystemExit
         netcdf_include = netcdf_prefix
         netcdf_h_file = os.path.join(netcdf_prefix, 'netcdf.h')
@@ -82,7 +85,7 @@ else:
         scripts.append('scientific_win32_postinstall.py')
         options['bdist_wininst'] = {'install_script': "scientific_win32_postinstall.py"}
     else:
-        print "Using netCDF installation in ", netcdf_prefix
+        print("Using netCDF installation in ", netcdf_prefix)
         netcdf_include = os.path.join(netcdf_prefix, 'include')
         netcdf_h_file = os.path.join(netcdf_prefix, 'include', 'netcdf.h')
         netcdf_lib = os.path.join(netcdf_prefix, 'lib')
@@ -164,7 +167,7 @@ line plots and 3D wireframe models.""",
  
        cmdclass = cmdclass,
        options = options,
-       
+       use_2to3 = True,
        install_requies=[
            'numpy>=1.6',
            'oldnumeric',
