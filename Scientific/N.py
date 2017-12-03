@@ -4,6 +4,9 @@
 # directly.
 
 import numpy as np
+
+from numpy import array
+
 def int_sum(a, axis=0):
     return np.add.reduce(a, axis)
 def zeros_st(shape, other):
