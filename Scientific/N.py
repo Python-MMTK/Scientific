@@ -5,9 +5,14 @@
 
 import numpy as np
 
-from numpy import array, logical_and, sum, arange, zeros, sqrt
+from numpy import (
+    array, logical_and, sum,
+    arange, zeros, sqrt, minimum, arccos,
+)
 from numpy import array_equal as equal
 from numpy import ndarray as ArrayType
+from numpy import newaxis as NewAxis
+from numpy import float64 as Float
 
 def int_sum(a, axis=0):
     return np.add.reduce(a, axis)
