@@ -31,6 +31,17 @@ class ARModelTest(unittest.TestCase):
         self.assertAlmostEqual(spectrum[1], 0.0728546620522, 10)
         self.assertAlmostEqual(spectrum[2], 0.00741215804406, 10)
         poles = model.poles()
+        
+        print(poles)
+        
+        sum_poles = N.sum(poles)
+        real_poles = sum_poles.real
+        
+        print(sum_poles)
+        print(real_poles)
+
+        raise Exception()
+
         self.assertAlmostEqual(N.sum(poles).real, 0.8508408685, 10)
         self.assertEqual(N.sum(poles).imag, 0.)
         correlation = model.correlation(3).values
