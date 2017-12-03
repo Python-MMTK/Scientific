@@ -43,6 +43,7 @@ class Tensor:
         self.array = N.array(elements)
         if nocheck is None:
             if not N.logical_and.reduce(N.equal(N.array(self.array.shape), 3)):
+                print(str(self.array))
                 raise ValueError('Tensor must have length 3 along any axis')
         self.rank = len(self.array.shape)
 
