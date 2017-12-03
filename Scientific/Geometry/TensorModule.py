@@ -5,6 +5,8 @@
 # last revision: 2006-11-23
 #
 
+import numpy as np
+
 from Scientific import N; Numeric = N
 
 class Tensor:
@@ -42,7 +44,7 @@ class Tensor:
         """
         self.array = N.array(elements)
         if nocheck is None:
-            if not N.logical_and.reduce(N.equal(N.array(self.array.shape), 3)):
+            if not (np.array(self.array.shape) == 3).all():
                 raise ValueError('Tensor must have length 3 along any axis')
         self.rank = len(self.array.shape)
 

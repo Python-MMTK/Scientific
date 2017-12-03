@@ -94,27 +94,6 @@ else:
                              libraries = ['netcdf'],
                              extra_compile_args=extra_compile_args)]
 
-try:
-    # Add code for including documentation in Mac packages
-    import bdist_mpkg
-    from distutils.command.bdist_mpkg import bdist_mpkg as bdist_mpkg
-    class my_bdist_mpkg(bdist_mpkg):
-        def initialize_options(self):
-            bdist_mpkg.initialize_options(self)
-
-            self.scheme_descriptions['examples'] = u'(Optional) ScientificPython example code'
-            self.scheme_map['examples'] = '/Developer/Python/ScientificPython/Examples'
-            self.scheme_copy['examples'] = 'Examples'
-
-            self.scheme_descriptions['doc'] = u'(Optional) ScientificPython documentation'
-            self.scheme_map['doc'] = '/Developer/Python/ScientificPython/Documentation'
-            self.scheme_copy['doc'] = 'Doc'
-
-    cmdclass['bdist_mpkg'] = my_bdist_mpkg
-
-except ImportError:
-    pass
-
 packages = ['Scientific', 'Scientific.Clustering', 'Scientific.Functions',
             'Scientific.Geometry', 'Scientific.IO',
             'Scientific.Physics', 'Scientific.QtWidgets',
@@ -187,6 +166,7 @@ line plots and 3D wireframe models.""",
        options = options,
        
        install_requies=[
-           'numpy>=1.6,<=1.8',
+           'numpy>=1.6',
+           'oldnumeric',
        ],
        )
