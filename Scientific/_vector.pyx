@@ -2,7 +2,7 @@
 #
 # Written by Konrad Hinsen
 #
-
+from __future__ import division
 
 cdef extern from "math.h":
 
@@ -11,8 +11,6 @@ cdef extern from "math.h":
 
 import numpy as np
 cimport numpy as np
-
-from __future__ import division
 
 #
 # For efficiency reasons (calling __init__ makes the creation of a vector
