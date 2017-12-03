@@ -34,7 +34,7 @@ class array(object):
             
             return _check(_np, _on)
             
-        if callable(getattr(self._np, name))
+        if callable(getattr(self._np, name)):
             return fn
         else:
             _np = getattr(self._np, name)
