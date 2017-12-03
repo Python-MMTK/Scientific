@@ -6,8 +6,8 @@
 import numpy as np
 
 from numpy import (
-    array, logical_and, sum,
-    arange, zeros, sqrt, minimum, arccos,
+    array, logical_and, logical_or, sum, arange,
+    zeros, sqrt, minimum, arccos, maximum, exp
 )
 from numpy import array_equal as equal
 from numpy import ndarray as ArrayType
