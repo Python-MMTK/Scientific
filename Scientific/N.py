@@ -12,6 +12,14 @@ class array(object):
         self._np = np.array(*args, **kw)
         self._on = on.array(*args, **kw)
         assert (self._np == self._on).all()
+        
+    def __len__(self):
+        _np = len(self._np)
+        _on = len(self._on)
+        
+        assert _np == _on
+        
+        return _np
     
     def __getattr__(self, name):
         def _check(_np, _on):
