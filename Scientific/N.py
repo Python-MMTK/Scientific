@@ -28,7 +28,7 @@ class array(object):
                 assert _np == _on
                 return _np
         
-        def fn(*args, **kw):4
+        def fn(*args, **kw):
             _np = getattr(self._np, name)(*args, **kw)
             _on = getattr(self._on, name)(*args, **kw)
             
