@@ -1,4 +1,4 @@
 # FIXME: Rename this file to pyproject.toml once pip implements PEP 518
 Cython
-numpy==1.8
+numpy==1.9
 pkginfo
