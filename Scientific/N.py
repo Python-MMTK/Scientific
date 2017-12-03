@@ -4,3 +4,11 @@
 # directly.
 
 from oldnumeric import *
+from numpy import ndarray as array_type
+
+def int_sum(a, axis=0):
+    return add.reduce(a, axis)
+def zeros_st(shape, other):
+    return zeros(shape, dtype=other.dtype)
+
+package = "NumPy"
