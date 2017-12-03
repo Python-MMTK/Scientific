@@ -3,10 +3,10 @@
 # Numeric package. Please don't use it in new code, use numpy
 # directly.
 
-from numpy.oldnumeric import *
+import numpy as np
 def int_sum(a, axis=0):
-    return add.reduce(a, axis)
+    return np.add.reduce(a, axis)
 def zeros_st(shape, other):
-    return zeros(shape, dtype=other.dtype)
+    return np.zeros(shape, dtype=other.dtype)
 from numpy import ndarray as array_type
 package = "NumPy"
