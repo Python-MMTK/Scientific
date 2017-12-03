@@ -6,6 +6,7 @@
 import numpy as np
 
 from numpy import array, logical_and
+from numpy import array_equal as equal
 
 def int_sum(a, axis=0):
     return np.add.reduce(a, axis)
