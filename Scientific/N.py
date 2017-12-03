@@ -14,10 +14,7 @@ class array(object):
         assert (self._np == self._on).all()
     
     def __getattr__(self, name):
-        def fn(*args, **kw):
-            _np = getattr(self._np, name)(*args, **kw)
-            _on = getattr(self._on, name)(*args, **kw)
-            
+        def _check(_np, _on):
             if isinstance(_np, np.ndarray):
                 assert (_np == _on).all()
                 
@@ -30,8 +27,20 @@ class array(object):
             else:
                 assert _np == _on
                 return _np
-
-        return fn
+        
+        def fn(*args, **kw):4
+            _np = getattr(self._np, name)(*args, **kw)
+            _on = getattr(self._on, name)(*args, **kw)
+            
+            return _check(_np, _on)
+            
+        if callable(getattr(self._np, name))
+            return fn
+        else:
+            _np = getattr(self._np, name)
+            _on = getattr(self._on, name)
+            
+            return _check(_np, _on)
 
 
 from numpy import (
