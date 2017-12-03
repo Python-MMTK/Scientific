@@ -4,3 +4,4 @@
 # directly.
 
 from numpy.linalg import inv as inverse
+from numpy.linalg import eig as eigenvalues
