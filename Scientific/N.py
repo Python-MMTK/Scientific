@@ -7,6 +7,21 @@ import numpy as np
 import numpy.oldnumeric as on
 
 
+def _check(_np, _on):
+    if isinstance(_np, np.ndarray):
+        assert (_np == _on).all()
+
+        # Hack around the constructor
+        _ar = array([1])
+        _ar._np = _np
+        _ar._on = _on
+
+        return _ar
+    else:
+        assert _np == _on
+        return _np
+
+
 class array(object):
     def __init__(self, *args, **kw):
         self._np = np.array(*args, **kw)
@@ -23,22 +38,14 @@ class array(object):
     
     def __array__(self):
         return self._np
+    
+    def __mul__(self, other):
+        _np = self._np * other
+        _on = self._on * other
+
+        return _check(_np, _on)
 
     def __getattr__(self, name):
-        def _check(_np, _on):
-            if isinstance(_np, np.ndarray):
-                assert (_np == _on).all()
-                
-                # Hack around the constructor
-                _ar = array([1])
-                _ar._np = _np
-                _ar._on = _on
-                
-                return _ar
-            else:
-                assert _np == _on
-                return _np
-        
         def fn(*args, **kw):
             _np = getattr(self._np, name)(*args, **kw)
             _on = getattr(self._on, name)(*args, **kw)
