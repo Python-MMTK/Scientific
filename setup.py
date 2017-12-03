@@ -188,5 +188,6 @@ line plots and 3D wireframe models.""",
        
        install_requies=[
            'numpy>=1.6,<=1.9',
+           'oldnumeric',
        ],
        )
