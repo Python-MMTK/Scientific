@@ -91,9 +91,9 @@ class Polynomial:
         return Polynomial(Numeric.sum(temp))
 
     def __div__(self, other):
-        if not hasattr(other, 'dim'):
-            other = [other]
-        elif self.dim != 1 or other.dim != 1:
+        print(repr(other))
+        raise Exception()
+        if self.dim != 1 or other.dim != 1:
             raise ValueError("not implemented")
         if len(other.coeff) == 1:
             return Polynomial(self.coeff/other.coeff[0])
