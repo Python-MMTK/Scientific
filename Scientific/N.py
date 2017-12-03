@@ -6,13 +6,16 @@
 import numpy as np
 
 from numpy import (
-    array, logical_and, logical_or, sum, arange,
-    zeros, sqrt, minimum, arccos, maximum, exp, add, argsort
+    array, logical_and, logical_or, less_equal, sum, arange,
+    zeros, sqrt, minimum, arccos, maximum, exp, add, argsort,
+    multiply,
 )
 from numpy import array_equal as equal
+from numpy import conj as conjugate
 from numpy import ndarray as ArrayType
 from numpy import newaxis as NewAxis
 from numpy import float64 as Float
+from numpy import int64 as Int
 
 def int_sum(a, axis=0):
     return np.add.reduce(a, axis)
