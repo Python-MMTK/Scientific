@@ -20,7 +20,13 @@ class array(object):
             
             if isinstance(_np, np.ndarray):
                 assert (_np == _on).all()
-                return array(_np)
+                
+                # Hack around the constructor
+                _ar = array([1])
+                _ar._np = _np
+                _ar._on = _on
+                
+                return _ar
             else:
                 assert _np == _on
                 return _np
