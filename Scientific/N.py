@@ -21,6 +21,9 @@ class array(object):
         
         return _np
     
+    def __array__(self):
+        return self._np
+
     def __getattr__(self, name):
         def _check(_np, _on):
             if isinstance(_np, np.ndarray):
