@@ -2,7 +2,6 @@
 #
 # Written by Konrad Hinsen
 #
-from __future__ import division
 
 cdef extern from "math.h":
 
@@ -136,6 +135,8 @@ cdef class vector:
         result = vector()
         vector.set(result, self.xv/factor, self.yv/factor, self.zv/factor)
         return result
+
+    __div__ = __truediv__
 
     def __richcmp__(vector self, other, int op):
         if op != 2 and op != 3:
