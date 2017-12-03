@@ -4,9 +4,32 @@
 # directly.
 
 import numpy as np
+import numpy.oldnumeric as on
+
+
+class array(object):
+    def __init__(self, *args, **kw):
+        self._np = np.array(*args, **kw)
+        self._on = on.array(*args, **kw)
+        assert (self._np == self._on).all()
+    
+    def __getattr__(self, name):
+        def fn(*args, **kw):
+            _np = getattr(self._np, name)(*args, **kw)
+            _on = getattr(self._on, name)(*args, **kw)
+            
+            if isinstance(_np, np.ndarray):
+                assert (_np == _on).all()
+                return array(_np)
+            else:
+                assert _np == _on
+                return _np
+
+        return fn
+
 
 from numpy import (
-    array, logical_and, logical_or, less_equal, sum, arange,
+    logical_and, logical_or, less_equal, sum, arange,
     zeros, sqrt, minimum, arccos, maximum, exp, add, argsort,
     multiply, fabs, concatenate, divide, argmax, take, repeat,
     identity,
