@@ -8,6 +8,8 @@
 Polynomials in any number of variables
 """
 
+import numpy as np
+
 from Scientific import N, LA; Numeric = N; LinearAlgebra = LA
 from Scientific.indexing import index_expression
 
@@ -89,6 +91,8 @@ class Polynomial:
         return Polynomial(Numeric.sum(temp))
 
     def __div__(self, other):
+        if not isinstance(other, np.ndarray):
+            other = np.array(other)
         if self.dim != 1 or other.dim != 1:
             raise ValueError("not implemented")
         if len(other.coeff) == 1:
