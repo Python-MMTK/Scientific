@@ -8,7 +8,8 @@ import numpy as np
 from numpy import (
     array, logical_and, logical_or, less_equal, sum, arange,
     zeros, sqrt, minimum, arccos, maximum, exp, add, argsort,
-    multiply, fabs, concatenate, divide, argmax, take
+    multiply, fabs, concatenate, divide, argmax, take, repeat,
+    identity,
 )
 from numpy import array_equal as equal
 from numpy import conj as conjugate
