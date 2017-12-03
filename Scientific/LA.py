@@ -3,4 +3,4 @@
 # Numeric package. Please don't use it in new code, use numpy
 # directly.
 
-from numpy.oldnumeric.linear_algebra import *
+from numpy.linalg import inv as inverse
