@@ -3,5 +3,4 @@
 # Numeric package. Please don't use it in new code, use numpy
 # directly.
 
-from numpy.linalg import inv as inverse
-from numpy.linalg import eig as eigenvalues
+from oldnumeric.linear_algebra import *
