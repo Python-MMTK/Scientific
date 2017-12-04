@@ -120,7 +120,7 @@ class Vector:
 
     def __cmp__(self, other):
         if isVector(other):
-            return cmp(Numeric.add.reduce(abs(self.array-other.array)), 0)
+            return (self.array == other.array).all()
         return NotImplemented
     
     __eq__ = __cmp__
