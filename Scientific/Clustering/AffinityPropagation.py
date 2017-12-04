@@ -115,6 +115,9 @@ class DataSet(object):
         self.smallest_similarity = N.minimum.reduce(self.similarities)
         self.largest_similarity = N.maximum.reduce(self.similarities)
         sort_indices = N.argsort(self.similarities)
+        print(sort_indices)
+        print(sort_indices[ns/2])
+        raise Exception()
         ns = len(self.similarities)
         if ns % 2 == 1:
             self.median_similarity = self.similarities[sort_indices[ns/2]]
