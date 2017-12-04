@@ -122,6 +122,8 @@ class Vector:
         if isVector(other):
             return cmp(Numeric.add.reduce(abs(self.array-other.array)), 0)
         return NotImplemented
+    
+    __eq__ = __cmp__
 
     def __len__(self):
         return 3
