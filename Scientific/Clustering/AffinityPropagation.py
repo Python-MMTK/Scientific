@@ -115,13 +115,14 @@ class DataSet(object):
         self.smallest_similarity = N.minimum.reduce(self.similarities)
         self.largest_similarity = N.maximum.reduce(self.similarities)
         sort_indices = N.argsort(self.similarities)
-        ns = len(self.similarities)
+        ns = int(len(self.similarities) / 2)
+        
         if ns % 2 == 1:
-            self.median_similarity = self.similarities[sort_indices[ns/2]]
+            self.median_similarity = self.similarities[sort_indices[ns]]
         else:
             self.median_similarity = \
-              (self.similarities[sort_indices[ns/2]]
-               + self.similarities[sort_indices[ns/2-1]])/2.
+              (self.similarities[sort_indices[ns]]
+               + self.similarities[sort_indices[ns-1]])/2.
 
     def _storeSimilarity(self, i, k, s, minimal_similarity):
         if minimal_similarity is None or s >= minimal_similarity:
