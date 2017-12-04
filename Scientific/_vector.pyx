@@ -136,7 +136,10 @@ cdef class vector:
         vector.set(result, self.xv/factor, self.yv/factor, self.zv/factor)
         return result
 
-    __truediv__ = __div__
+    def __truediv__(vector self, double factor):
+        result = vector()
+        vector.set(result, self.xv/factor, self.yv/factor, self.zv/factor)
+        return result
 
     def __richcmp__(vector self, other, int op):
         if op != 2 and op != 3:
