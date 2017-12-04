@@ -82,6 +82,8 @@ class Polynomial:
         return Polynomial(coeff1+coeff2)
 
     def __mul__(self, other):
+        if not hasattr(other, 'dim'):
+            other = Polynomial([other])
         if self.dim != 1 or other.dim != 1:
             raise ValueError("not implemented")
         c = Numeric.multiply.outer(self.coeff, other.coeff)
