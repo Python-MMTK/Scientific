@@ -8,6 +8,8 @@
 Polynomials in any number of variables
 """
 
+import numpy as np
+
 from Scientific import N, LA; Numeric = N; LinearAlgebra = LA
 from Scientific.indexing import index_expression
 

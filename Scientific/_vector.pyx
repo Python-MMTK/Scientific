@@ -3,7 +3,6 @@
 # Written by Konrad Hinsen
 #
 
-
 cdef extern from "math.h":
 
     double sqrt(double x)

@@ -124,7 +124,7 @@ class DataSet(object):
                + self.similarities[sort_indices[ns/2-1]])/2.
 
     def _storeSimilarity(self, i, k, s, minimal_similarity):
-        if s >= minimal_similarity:
+        if minimal_similarity is None or s >= minimal_similarity:
             index_by_i = self.index.setdefault(i, {})
             index_by_i[k] = len(self.similarities)
             self.similarities.append(s)

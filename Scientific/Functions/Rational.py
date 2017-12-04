@@ -8,6 +8,8 @@
 Rational functions in one variable
 """
 
+import numpy as np
+
 from Polynomial import Polynomial
 from Scientific import N; Numeric = N
 
