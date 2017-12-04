@@ -91,8 +91,6 @@ class Polynomial:
         return Polynomial(Numeric.sum(temp))
 
     def __div__(self, other):
-        print(repr(other))
-        raise Exception()
         if self.dim != 1 or other.dim != 1:
             raise ValueError("not implemented")
         if len(other.coeff) == 1:
