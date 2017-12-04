@@ -12,6 +12,7 @@ from glob import glob
 
 from distutils.core import Extension
 from distutils.command.install_headers import install_headers
+from Cython.Builld import cythonize
 
 use_cython = True
 src_ext = 'pyx'
@@ -155,7 +156,7 @@ line plots and 3D wireframe models.""",
 
        packages = packages,
        headers = headers,
-       ext_modules = ext_modules,
+       ext_modules = cythonize(ext_modules),
        scripts = scripts,
        data_files = data_files,
  
