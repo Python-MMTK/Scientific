@@ -73,8 +73,6 @@ class RationalFunction:
             self.denominator = Polynomial(self.denominator.coeff[n:])
         factor = self.denominator.coeff[-1]
         if factor != 1.:
-            print(factor)
-            raise Exception()
             self.numerator = self.numerator/factor
             self.denominator = self.denominator/factor
 
