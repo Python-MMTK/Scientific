@@ -8,6 +8,8 @@
 Rational functions in one variable
 """
 
+import numpy as np
+
 from Polynomial import Polynomial
 from Scientific import N; Numeric = N
 
@@ -68,8 +70,8 @@ class RationalFunction:
             self.numerator = Polynomial(self.numerator.coeff[n:])
             self.denominator = Polynomial(self.denominator.coeff[n:])
         factor = self.denominator.coeff[-1]
-        if not isinstance(factor, Polynomial):
-            factor = Polynomial(factor)
+        if isinstance(factor, np.ndarray) and factor.size == 1:
+            factor = Polynomial(factor[0])
         if factor != 1.:
             self.numerator = self.numerator/factor
             self.denominator = self.denominator/factor
