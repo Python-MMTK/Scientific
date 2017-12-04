@@ -91,6 +91,8 @@ elif sys.version_info < (3, 0):
                              library_dirs=[netcdf_lib],
                              libraries = ['netcdf'],
                              extra_compile_args=extra_compile_args)]
+else:
+    ext_modules = []
 
 packages = ['Scientific', 'Scientific.Clustering', 'Scientific.Functions',
             'Scientific.Geometry', 'Scientific.IO',
