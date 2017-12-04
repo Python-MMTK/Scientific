@@ -117,9 +117,10 @@ class DataSet(object):
         sort_indices = N.argsort(self.similarities)
         ns = len(self.similarities)
         
+        print(ns)
+        print(self.similarities)
         print(sort_indices)
         print(sort_indices[ns/2])
-        print(self.similarities)
         print(self.similarities[sort_indices[ns/2]])
         raise Exception()
 
