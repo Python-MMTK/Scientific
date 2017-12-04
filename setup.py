@@ -61,13 +61,16 @@ if netcdf_prefix is None:
     else:
         netcdf_prefix = None
 
-if netcdf_prefix is None:
+if netcdf_prefix is None and sys.version_info < (3, 0):
     raise Exception(textwrap.dedent(""""
         If netCDF is installed somewhere on this computer,
         please set NETCDF_PREFIX to the path where
         include/netcdf.h and lib/netcdf.a are located
         and re-run the build procedure.
         """).strip())
+elif netcdf_prefix is None:
+    # Note: netcdf is not compatible with py3 at this time
+    pass
 else:
     if sys.platform == 'win32':
         if netcdf_dll is None:
