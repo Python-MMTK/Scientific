@@ -10,6 +10,11 @@
 #endif
 
 #include "Python.h"
+
+#if PY_VERSION_HEX >= 0x03000000
+#define staticforward static
+#endif
+
 #if defined(NUMPY)
 #include "numpy/arrayobject.h"
 #else
