@@ -91,6 +91,8 @@ class Polynomial:
         return Polynomial(Numeric.sum(temp))
 
     def __div__(self, other):
+        if not hasattr(other, 'dim'):
+            other = Polynomial([other])
         print(other)
         raise Exception()
         if self.dim != 1 or other.dim != 1:
