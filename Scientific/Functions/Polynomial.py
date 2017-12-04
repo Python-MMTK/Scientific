@@ -91,8 +91,8 @@ class Polynomial:
         return Polynomial(Numeric.sum(temp))
 
     def __div__(self, other):
-        if isinstance(other, np.ndarray) and other.size <= 1:
-            other = Polynomial(other.tolist()[0])
+        if not isinstance(other, Polynomial):
+            other = Polynomial([other])
         elif self.dim != 1 or other.dim != 1:
             raise ValueError("not implemented")
         if len(other.coeff) == 1:
