@@ -12,8 +12,6 @@ from glob import glob
 
 from distutils.core import Extension
 from distutils.command.install_headers import install_headers
-from Cython.Build import cythonize
-
 
 use_cython = True
 src_ext = 'pyx'
@@ -64,15 +62,12 @@ if netcdf_prefix is None:
         netcdf_prefix = None
 
 if netcdf_prefix is None:
-    print("netCDF not found, the netCDF module will not be built!")
-    if sys.platform != 'win32':
-        print(textwrap.dedent(""""
-            If netCDF is installed somewhere on this computer,
-            please set NETCDF_PREFIX to the path where
-            include/netcdf.h and lib/netcdf.a are located
-            and re-run the build procedure.
-            """).strip())
-    ext_modules = []
+    raise Exception(textwrap.dedent(""""
+        If netCDF is installed somewhere on this computer,
+        please set NETCDF_PREFIX to the path where
+        include/netcdf.h and lib/netcdf.a are located
+        and re-run the build procedure.
+        """).strip())
 else:
     if sys.platform == 'win32':
         if netcdf_dll is None:
@@ -120,9 +115,6 @@ ext_modules.append(Extension('Scientific._interpolation',
                              include_dirs=['Include']+numpy_include,
                              libraries=math_libraries,
                              extra_compile_args=extra_compile_args))
-
-if use_cython:
-    ext_modules = cythonize(ext_modules)
 
 scripts.append('task_manager')
 if sys.version[:3] >= '2.1':
