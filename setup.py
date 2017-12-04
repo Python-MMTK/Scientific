@@ -68,10 +68,7 @@ if netcdf_prefix is None and sys.version_info < (3, 0):
         include/netcdf.h and lib/netcdf.a are located
         and re-run the build procedure.
         """).strip())
-elif netcdf_prefix is None:
-    # Note: netcdf is not compatible with py3 at this time
-    pass
-else:
+elif sys.version_info < (3, 0):
     if sys.platform == 'win32':
         if netcdf_dll is None:
             print("Option --netcdf_dll is missing")
