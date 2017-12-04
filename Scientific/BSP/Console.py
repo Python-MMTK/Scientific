@@ -122,11 +122,11 @@ class ParallelConsole(InteractiveConsole):
         output.sort(lambda a, b: cmp(a[0], b[0]))
         for pid, stdout, stderr in output:
             if stdout or stderr:
-                print ("-- Processor %d " % pid) + 40*'-'
+                print(("-- Processor %d " % pid) + 40*'-')
                 if stdout:
-                    print stdout,
+                    print(stdout)
                 if stderr:
-                    print stderr,
+                    print(stderr)
         if not more:
             self.resetbuffer()
         return more
@@ -140,7 +140,7 @@ class ParallelConsole(InteractiveConsole):
                 self.interact(banner)
                 break
             except KeyboardInterrupt:
-                print "KeyboardInterrupt"
+                print("KeyboardInterrupt")
                 banner = ""
         put(None, range(1, numberOfProcessors))
         sync()
