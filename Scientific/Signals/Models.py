@@ -200,7 +200,7 @@ class AutoRegressiveModel:
             den_coeff.append(sum)
         den_coeff.reverse()
         mz = (RationalFunction(den_order*[0.] + [1.], den_coeff)
-              + Polynomial([1., -1.]))/self.delta_t**2
+              + RationalFunction([1., -1.], [1.]))/self.delta_t**2
         if not _isComplex(self.coeff):
             mz.numerator.coeff = _realPart(mz.numerator.coeff)
             mz.denominator.coeff = _realPart(mz.denominator.coeff)
