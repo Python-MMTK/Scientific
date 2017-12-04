@@ -71,8 +71,10 @@ class RationalFunction:
             self.denominator = Polynomial(self.denominator.coeff[n:])
         factor = self.denominator.coeff[-1]
         if not isinstance(factor, Polynomial):
-            if isinstance(factor, np.ndarray) and factor.size == 1:
-                factor = factor[0]
+            if hasattr(factor, 'tolist'):
+                factor = factor.tolist()
+            else:
+                factor = list(factor)
             factor = Polynomial(factor)
         if factor != 1.:
             self.numerator = self.numerator/factor
