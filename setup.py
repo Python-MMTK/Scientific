@@ -133,7 +133,7 @@ class modified_install_headers(install_headers):
 cmdclass['install_headers'] = modified_install_headers
 
 headers = glob(os.path.join ("Include","Scientific","*.h"))
-if netcdf_prefix is not None and and sys.version_info < (3, 0):
+if netcdf_prefix is not None and sys.version_info < (3, 0):
     headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",
