@@ -108,6 +108,7 @@ class RationalFunction:
                                 other.denominator*self.numerator)
 
     def __add__(self, other):
+        raise Exception()
         return RationalFunction(self.numerator*other.denominator+
                                 self.denominator*other.numerator,
                                 self.denominator*other.denominator)
