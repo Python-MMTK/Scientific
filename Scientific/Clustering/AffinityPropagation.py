@@ -118,6 +118,7 @@ class DataSet(object):
         ns = len(self.similarities)
         
         print(ns)
+        print(ns/2)
         print(self.similarities)
         print(sort_indices)
         print(sort_indices[ns/2])
