@@ -17,4 +17,8 @@ install:
   - pip install -e .
 
 script:
+  - if [ "$TRAVIS_PYTHON_VERSION" == "3.6" ]; then pip install mypy ; fi
+  - if [ "$TRAVIS_PYTHON_VERSION" == "3.6" ]; mypy --ignore-missing-imports . ; fi
+  
   - pytest
+ 
