@@ -1205,12 +1205,15 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
 {
   static char *history = "history";
   Py_ssize_t alloc, old, new, new_alloc;
-#ifdef IS_PY3K
-  PyObject *new_string;
-#else
+#ifndef IS_PY3K
   PyStringObject *new_string;
+  int ret;
+#else
+  PyObject* text_object;
+  PyObject* new_string;
 #endif
-  PyObject *h = PyNetCDFFile_GetAttribute(self, history);
+  PyObject *h = PyNetCDFFile_GetAttribute(self, history);  /* PyUnicode */
+#ifndef IS_PY3K
   if (h == NULL) {
     PyErr_Clear();
     alloc = 0;
@@ -1223,11 +1226,7 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     new = old + strlen(text) + 1;
   }
   new_alloc = (new <= alloc) ? alloc : new + 500;
-#ifdef IS_PY3K
-  new_string = (PyStringObject *)PyUnicode_FromStringAndSize(NULL, new_alloc);
-#else
-  new_string = (PyStringObject *)PyString_FromStringAndSize(NULL, new_alloc);
-#endif
+  new_string = (PyObject *)PyUnicode_FromStringAndSize(NULL, new_alloc);
   if (new_string) {
     char *s = new_string->ob_sval;
     int len, ret;
@@ -1240,9 +1239,22 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
       s[len] = '\n';
     }
     strcpy(s+len+1, text);
+#else
+   if (h == NULL) {
+       PyErr_Clear();
+   } else {
+       text_object = PyUnicode_FromString(text + '\n');
+       new_string = (PyObject *)PyUnicode_Concat(h, text);
+       Py_DECREF(text_object);
+   }
+#endif
     ret = PyNetCDFFile_SetAttribute(self, history, (PyObject *)new_string);
     Py_XDECREF(h);
+#ifdef IS_PY3K
+    Py_XDECREF(new_string);
+#else
     Py_DECREF(new_string);
+#endif
     return ret;
   }
   else
