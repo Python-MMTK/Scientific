@@ -1264,7 +1264,7 @@ PyNetCDFFileObject_repr(PyNetCDFFileObject *file)
 
 /* Type definition */
 
-statichere PyTypeObject PyNetCDFFile_Type = {
+static PyTypeObject PyNetCDFFile_Type = {
   PyObject_HEAD_INIT(NULL)
   0,		/*ob_size*/
   "NetCDFFile",	/*tp_name*/
@@ -2225,7 +2225,7 @@ static PyMappingMethods PyNetCDFVariableObject_as_mapping = {
   (objobjargproc)PyNetCDFVariableObject_ass_subscript,  /*mp_ass_subscript*/
 };
 
-statichere PyTypeObject PyNetCDFVariable_Type = {
+static PyTypeObject PyNetCDFVariable_Type = {
   PyObject_HEAD_INIT(NULL)
   0,		     /*ob_size*/
   "NetCDFVariable",  /*tp_name*/
