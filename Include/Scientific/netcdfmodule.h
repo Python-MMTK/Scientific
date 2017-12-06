@@ -192,11 +192,11 @@ typedef struct {
 /* Write string. Returns -1 if there was an error.  */
 #define PyNetCDFVariable_WriteString_RET int
 #define PyNetCDFVariable_WriteString_PROTO \
-	  (PyNetCDFVariableObject *var, PyStringObject *value)
+	  (PyNetCDFVariableObject *var, PyObject *value)
 #define PyNetCDFVariable_WriteString_NUM 20
 
 /* Read string  */
-#define PyNetCDFVariable_ReadAsString_RET PyStringObject *
+#define PyNetCDFVariable_ReadAsString_RET PyObject *
 #define PyNetCDFVariable_ReadAsString_PROTO \
 	  (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_ReadAsString_NUM 21
