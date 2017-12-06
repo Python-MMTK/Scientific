@@ -218,8 +218,8 @@ typedef struct {
 #ifdef _NETCDF_MODULE
 
 /* Type object declarations */
-staticforward PyTypeObject PyNetCDFFile_Type;
-staticforward PyTypeObject PyNetCDFVariable_Type;
+static PyTypeObject PyNetCDFFile_Type;
+static PyTypeObject PyNetCDFVariable_Type;
 
 /* Type check macros */
 #define PyNetCDFFile_Check(op) ((op)->ob_type == &PyNetCDFFile_Type)
