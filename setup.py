@@ -23,7 +23,7 @@ numpy_include = []
 data_files = []
 scripts = []
 options = {}
-is_py3 = False
+is_py3 = sys.version_info >= (3, 0)
 
 numpy_include = numpy.distutils.misc_util.get_numpy_include_dirs()
 
