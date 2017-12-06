@@ -1207,6 +1207,7 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
   Py_ssize_t alloc, old, new, new_alloc;
 #ifndef IS_PY3K
   PyStringObject *new_string;
+  int ret;
 #else
   PyObject* text_object;
   PyObject* new_string;
