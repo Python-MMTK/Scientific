@@ -23,6 +23,7 @@ numpy_include = []
 data_files = []
 scripts = []
 options = {}
+is_py3 = sys.version_info >= (3, 0)
 
 numpy_include = numpy.distutils.misc_util.get_numpy_include_dirs()
 
@@ -62,14 +63,16 @@ if netcdf_prefix is None:
     else:
         netcdf_prefix = None
 
-if netcdf_prefix is None and sys.version_info < (3, 0):
+if is_py3:
+    ext_modules = []
+elif netcdf_prefix is None:
     raise Exception(textwrap.dedent(""""
         If netCDF is installed somewhere on this computer,
         please set NETCDF_PREFIX to the path where
         include/netcdf.h and lib/netcdf.a are located
         and re-run the build procedure.
         """).strip())
-elif sys.version_info < (3, 0):
+else:
     if sys.platform == 'win32':
         if netcdf_dll is None:
             print("Option --netcdf_dll is missing")
@@ -92,8 +95,6 @@ elif sys.version_info < (3, 0):
                              library_dirs=[netcdf_lib],
                              libraries = ['netcdf'],
                              extra_compile_args=extra_compile_args)]
-else:
-    ext_modules = []
 
 packages = ['Scientific', 'Scientific.Clustering', 'Scientific.Functions',
             'Scientific.Geometry', 'Scientific.IO',
@@ -134,7 +135,7 @@ class modified_install_headers(install_headers):
 cmdclass['install_headers'] = modified_install_headers
 
 headers = glob(os.path.join ("Include","Scientific","*.h"))
-if netcdf_prefix is not None and sys.version_info < (3, 0):
+if netcdf_prefix is not None and not is_py3:
     headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",

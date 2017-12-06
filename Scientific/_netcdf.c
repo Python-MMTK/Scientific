@@ -1205,7 +1205,11 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
 {
   static char *history = "history";
   Py_ssize_t alloc, old, new, new_alloc;
+#ifdef IS_PY3K
+  PyObject *new_string;
+#else
   PyStringObject *new_string;
+#endif
   PyObject *h = PyNetCDFFile_GetAttribute(self, history);
   if (h == NULL) {
     PyErr_Clear();
@@ -1264,7 +1268,7 @@ PyNetCDFFileObject_repr(PyNetCDFFileObject *file)
 
 /* Type definition */
 
-statichere PyTypeObject PyNetCDFFile_Type = {
+static PyTypeObject PyNetCDFFile_Type = {
   PyObject_HEAD_INIT(NULL)
   0,		/*ob_size*/
   "NetCDFFile",	/*tp_name*/
@@ -1705,7 +1709,11 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
     define_mode(self->file, 0);
     temp = (char *)malloc((self->dimensions[0]+1)*sizeof(char));
     if (temp == NULL)
+#ifdef IS_PY3K
+      return (PyObject *)PyErr_NoMemory();
+#else
       return (PyStringObject *)PyErr_NoMemory();
+#endif
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
     ret = nc_get_var_text(self->file->id, self->id, temp);
@@ -2225,7 +2233,7 @@ static PyMappingMethods PyNetCDFVariableObject_as_mapping = {
   (objobjargproc)PyNetCDFVariableObject_ass_subscript,  /*mp_ass_subscript*/
 };
 
-statichere PyTypeObject PyNetCDFVariable_Type = {
+static PyTypeObject PyNetCDFVariable_Type = {
   PyObject_HEAD_INIT(NULL)
   0,		     /*ob_size*/
   "NetCDFVariable",  /*tp_name*/

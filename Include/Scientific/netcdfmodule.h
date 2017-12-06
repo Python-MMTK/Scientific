@@ -191,12 +191,21 @@ typedef struct {
 
 /* Write string. Returns -1 if there was an error.  */
 #define PyNetCDFVariable_WriteString_RET int
+#ifdef IS_PY3K
+#define PyNetCDFVariable_WriteString_PROTO \
+	  (PyNetCDFVariableObject *var, PyObject *value)
+#else
 #define PyNetCDFVariable_WriteString_PROTO \
 	  (PyNetCDFVariableObject *var, PyStringObject *value)
+#endif
 #define PyNetCDFVariable_WriteString_NUM 20
 
 /* Read string  */
+#ifdef IS_PY3K
+#define PyNetCDFVariable_ReadAsString_RET PyObject *
+#else
 #define PyNetCDFVariable_ReadAsString_RET PyStringObject *
+#endif
 #define PyNetCDFVariable_ReadAsString_PROTO \
 	  (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_ReadAsString_NUM 21
@@ -209,8 +218,8 @@ typedef struct {
 #ifdef _NETCDF_MODULE
 
 /* Type object declarations */
-staticforward PyTypeObject PyNetCDFFile_Type;
-staticforward PyTypeObject PyNetCDFVariable_Type;
+static PyTypeObject PyNetCDFFile_Type;
+static PyTypeObject PyNetCDFVariable_Type;
 
 /* Type check macros */
 #define PyNetCDFFile_Check(op) ((op)->ob_type == &PyNetCDFFile_Type)
