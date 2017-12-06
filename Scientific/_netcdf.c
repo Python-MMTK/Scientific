@@ -11,8 +11,8 @@
 
 #include "Python.h"
 
-#if PY_VERSION_HEX >= 0x03000000
-#define staticforward static
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3K
 #endif
 
 #if defined(NUMPY)
@@ -29,9 +29,9 @@
 #define _NETCDF_MODULE
 #include "Scientific/netcdfmodule.h"
 
-staticforward int
+static int
 netcdf_file_init(PyNetCDFFileObject *self);
-staticforward PyNetCDFVariableObject *
+static PyNetCDFVariableObject *
 netcdf_variable_new(PyNetCDFFileObject *file, char *name, int id, int type,
 		    int ndims, int *dimids, int nattrs);
 
@@ -490,7 +490,11 @@ collect_attributes(int fileid, int varid, PyObject *attributes, int nattrs)
 	release_netCDF_lock();
 	Py_END_ALLOW_THREADS;
 	s[length] = '\0';
-	string = PyString_FromString(s);
+#ifdef IS_PY3K
+        string = PyUnicode_FromString(s);
+#else
+        string = PyString_FromString(s);
+#endif
 	free(s);
 	if (string != NULL) {
 	  PyDict_SetItemString(attributes, name, string);
@@ -729,8 +733,13 @@ open_netcdf_file(PyNetCDFFileObject *self, char *filename, char *mode)
     netcdf_signalerror(ret);
     return -1;
   }
+#ifdef IS_PY3K
+  self->name = PyUnicode_FromString(filename);
+  self->mode = PyUnicode_FromString(mode);
+#else
   self->name = PyString_FromString(filename);
   self->mode = PyString_FromString(mode);
+#endif
   return 0;
 }
 
@@ -1180,7 +1189,11 @@ static int
 PyNetCDFFile_SetAttributeString(PyNetCDFFileObject *self,
 				char *name, char *value)
 {
+#ifdef IS_PY3K
+  PyObject *string = PyUnicode_FromString(value);
+#else
   PyObject *string = PyString_FromString(value);
+#endif
   if (string != NULL)
     return PyNetCDFFile_SetAttribute(self, name, string);
   else
@@ -1206,7 +1219,11 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     new = old + strlen(text) + 1;
   }
   new_alloc = (new <= alloc) ? alloc : new + 500;
+#ifdef IS_PY3K
+  new_string = (PyStringObject *)PyUnicode_FromStringAndSize(NULL, new_alloc);
+#else
   new_string = (PyStringObject *)PyString_FromStringAndSize(NULL, new_alloc);
+#endif
   if (new_string) {
     char *s = new_string->ob_sval;
     int len, ret;
@@ -1238,7 +1255,11 @@ PyNetCDFFileObject_repr(PyNetCDFFileObject *file)
 	  PyString_AsString(file->name),
 	  PyString_AsString(file->mode),
 	  (long)file);
+#ifdef IS_PY3K
+  return PyUnicode_FromString(buf);
+#else
   return PyString_FromString(buf);
+#endif
 }
 
 /* Type definition */
@@ -1394,7 +1415,11 @@ PyNetCDFVariableObject_typecode(PyNetCDFVariableObject *self, PyObject *args)
   if (!PyArg_ParseTuple(args, ""))
     return NULL;
   t = typecode(self->type);
+#ifdef IS_PY3K
   return PyString_FromStringAndSize(&t, (Py_ssize_t)1);
+#else
+  return PyUnicode_FromStringAndSize(&t, (Py_ssize_t)1);
+#endif
 }
 
 /* Method table */
@@ -1461,7 +1486,11 @@ PyNetCDFVariable_GetAttribute(PyNetCDFVariableObject *self, char *name)
 	nc_inq_dimname(self->file->id, self->dimids[i], name);
 	release_netCDF_lock();
 	Py_END_ALLOW_THREADS;
+#ifdef IS_PY3K
 	PyTuple_SetItem(tuple, (Py_ssize_t)i, PyString_FromString(name));
+#else
+	PyTuple_SetItem(tuple, (Py_ssize_t)i, PyUnicode_FromString(name));
+#endif
       }
       return tuple;
     }
@@ -1506,7 +1535,11 @@ static int
 PyNetCDFVariable_SetAttributeString(PyNetCDFVariableObject *self,
 				    char *name, char *value)
 {
+#ifdef IS_PY3K
+  PyObject *string = PyUnicode_FromString(value);
+#else
   PyObject *string = PyString_FromString(value);
+#endif
   if (string != NULL)
     return PyNetCDFVariable_SetAttribute(self, name, string);
   else
@@ -1684,7 +1717,11 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
     }
     else {
       temp[self->dimensions[0]] = '\0';
+#ifdef IS_PY3K
+      string = PyUnicode_FromString(temp);
+#else
       string = PyString_FromString(temp);
+#endif
     }
     free(temp);
     return (PyStringObject *)string;
