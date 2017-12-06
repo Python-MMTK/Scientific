@@ -1207,6 +1207,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
   Py_ssize_t alloc, old, new, new_alloc;
 #ifndef IS_PY3K
   PyStringObject *new_string;
+#else
+  PyObject* text_object;
+  PyObject* new_string;
 #endif
   PyObject *h = PyNetCDFFile_GetAttribute(self, history);  /* PyUnicode */
 #ifndef IS_PY3K
@@ -1239,14 +1242,18 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
    if (h == NULL) {
        PyErr_Clear();
    } else {
-       PyObject *text_object = PyUnicode_FromString(text + '\n');
-       PyObject *new_string = (PyObject *)PyUnicode_Concat(h, text);
+       text_object = PyUnicode_FromString(text + '\n');
+       new_string = (PyObject *)PyUnicode_Concat(h, text);
        Py_DECREF(text_object);
    }
 #endif
     ret = PyNetCDFFile_SetAttribute(self, history, (PyObject *)new_string);
     Py_XDECREF(h);
+#ifdef IS_PY3K
+    Py_XDECREF(new_string);
+#else
     Py_DECREF(new_string);
+#endif
     return ret;
   }
   else
