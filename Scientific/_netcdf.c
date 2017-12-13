@@ -2292,7 +2292,7 @@ static PyMethodDef netcdf_methods[] = {
 
 /* Module initialization */
 
-#if IS_PY3K
+#ifdef IS_PY3K
 PyMODINIT_FUNC
 PyInit__netcdf(void)
 #else
