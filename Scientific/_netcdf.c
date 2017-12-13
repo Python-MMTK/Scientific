@@ -1706,8 +1706,13 @@ PyNetCDFVariable_ReadAsArray(PyNetCDFVariableObject *self,
   return array;
 }
 
+#ifdef IS_PY3K
+static PyObject *
+PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
+#else
 static PyStringObject *
 PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
+#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
@@ -1743,7 +1748,11 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
 #endif
     }
     free(temp);
+#ifdef IS_PY3K
+    return (PyObject *)string;
+#else
     return (PyStringObject *)string;
+#endif
   }
   else
     return NULL;
@@ -1947,7 +1956,11 @@ PyNetCDFVariable_WriteArray(PyNetCDFVariableObject *self,
 
 static int
 PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
+#ifdef IS_PY3K
+			     PyObject *value)
+#else
 			     PyStringObject *value)
+#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
