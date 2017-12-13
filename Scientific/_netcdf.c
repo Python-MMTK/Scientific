@@ -2292,8 +2292,13 @@ static PyMethodDef netcdf_methods[] = {
 
 /* Module initialization */
 
+#if IS_PY3K
+PyMODINIT_FUNC
+PyInit__netcdf(void)
+#else
 DL_EXPORT(void)
 init_netcdf(void)
+#endif
 {
   PyObject *m;
   static void *PyNetCDF_API[PyNetCDF_API_pointers];
