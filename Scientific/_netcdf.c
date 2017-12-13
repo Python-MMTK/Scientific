@@ -626,7 +626,7 @@ PyNetCDFFileObject_dealloc(PyNetCDFFileObject *self)
   Py_XDECREF(self->attributes);
   Py_XDECREF(self->name);
   Py_XDECREF(self->mode);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 /* Create file object */
@@ -1205,9 +1205,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
 {
   static char *history = "history";
   Py_ssize_t alloc, old, new, new_alloc;
+  int ret;
 #ifndef IS_PY3K
   PyStringObject *new_string;
-  int ret;
 #else
   PyObject* text_object;
   PyObject* new_string;
@@ -1219,8 +1219,7 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     alloc = 0;
     old = 0;
     new = strlen(text);
-  }
-  else {
+  } else {
     alloc = PyString_Size(h);
     old = strlen(PyString_AsString(h));
     new = old + strlen(text) + 1;
@@ -1239,6 +1238,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
       s[len] = '\n';
     }
     strcpy(s+len+1, text);
+  } else {
+    return -1;
+  }
 #else
    if (h == NULL) {
        PyErr_Clear();
@@ -1256,9 +1258,6 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     Py_DECREF(new_string);
 #endif
     return ret;
-  }
-  else
-    return -1;
 }
 
 /* Printed representation */
@@ -1342,7 +1341,7 @@ PyNetCDFVariableObject_dealloc(PyNetCDFVariableObject *self)
     free(self->name);
   Py_XDECREF(self->file);
   Py_XDECREF(self->attributes);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 /* Create variable object */
@@ -1707,8 +1706,13 @@ PyNetCDFVariable_ReadAsArray(PyNetCDFVariableObject *self,
   return array;
 }
 
+#ifdef IS_PY3K
+static PyObject *
+PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
+#else
 static PyStringObject *
 PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
+#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
@@ -1744,7 +1748,11 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
 #endif
     }
     free(temp);
+#ifdef IS_PY3K
+    return (PyObject *)string;
+#else
     return (PyStringObject *)string;
+#endif
   }
   else
     return NULL;
@@ -1948,7 +1956,11 @@ PyNetCDFVariable_WriteArray(PyNetCDFVariableObject *self,
 
 static int
 PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
+#ifdef IS_PY3K
+			     PyObject *value)
+#else
 			     PyStringObject *value)
+#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
@@ -2280,8 +2292,13 @@ static PyMethodDef netcdf_methods[] = {
 
 /* Module initialization */
 
+#ifdef IS_PY3K
+PyMODINIT_FUNC
+PyInit__netcdf(void)
+#else
 DL_EXPORT(void)
 init_netcdf(void)
+#endif
 {
   PyObject *m;
   static void *PyNetCDF_API[PyNetCDF_API_pointers];
