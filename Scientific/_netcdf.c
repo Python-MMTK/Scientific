@@ -1238,6 +1238,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
       s[len] = '\n';
     }
     strcpy(s+len+1, text);
+  } else {
+    return -1;
+  }
 #else
    if (h == NULL) {
        PyErr_Clear();
@@ -1255,9 +1258,6 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     Py_DECREF(new_string);
 #endif
     return ret;
-  } else {
-    return -1;
-  }
 }
 
 /* Printed representation */
