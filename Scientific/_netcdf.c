@@ -626,7 +626,7 @@ PyNetCDFFileObject_dealloc(PyNetCDFFileObject *self)
   Py_XDECREF(self->attributes);
   Py_XDECREF(self->name);
   Py_XDECREF(self->mode);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 /* Create file object */
@@ -1205,9 +1205,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
 {
   static char *history = "history";
   Py_ssize_t alloc, old, new, new_alloc;
+  int ret;
 #ifndef IS_PY3K
   PyStringObject *new_string;
-  int ret;
 #else
   PyObject* text_object;
   PyObject* new_string;
@@ -1219,8 +1219,7 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     alloc = 0;
     old = 0;
     new = strlen(text);
-  }
-  else {
+  } else {
     alloc = PyString_Size(h);
     old = strlen(PyString_AsString(h));
     new = old + strlen(text) + 1;
@@ -1256,9 +1255,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     Py_DECREF(new_string);
 #endif
     return ret;
-  }
-  else
+  } else {
     return -1;
+  }
 }
 
 /* Printed representation */
@@ -1342,7 +1341,7 @@ PyNetCDFVariableObject_dealloc(PyNetCDFVariableObject *self)
     free(self->name);
   Py_XDECREF(self->file);
   Py_XDECREF(self->attributes);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 /* Create variable object */
