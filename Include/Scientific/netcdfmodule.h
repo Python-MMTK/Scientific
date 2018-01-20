@@ -86,119 +86,128 @@ typedef struct {
 
 /* Open a netCDF file (i.e. create a new file object) */
 #define PyNetCDFFile_Open_RET PyNetCDFFileObject *
-#define PyNetCDFFile_Open_PROTO Py_PROTO((char *filename, char *mode))
+#define PyNetCDFFile_Open_PROTO (char *filename, char *mode)
 #define PyNetCDFFile_Open_NUM 2
 
 /* Close a netCDF file. Returns -1 if there was an error. */
 #define PyNetCDFFile_Close_RET int
-#define PyNetCDFFile_Close_PROTO Py_PROTO((PyNetCDFFileObject *file))
+#define PyNetCDFFile_Close_PROTO (PyNetCDFFileObject *file)
 #define PyNetCDFFile_Close_NUM 3
 
 /* Ensure that all data is written to the disk file.
    Returns 0 if there was an error. */
 #define PyNetCDFFile_Sync_RET int
-#define PyNetCDFFile_Sync_PROTO Py_PROTO((PyNetCDFFileObject *file))
+#define PyNetCDFFile_Sync_PROTO (PyNetCDFFileObject *file)
 #define PyNetCDFFile_Sync_NUM 4
 
 /* Create a new dimension. Returns -1 if there was an error. */
 #define PyNetCDFFile_CreateDimension_RET int
 #define PyNetCDFFile_CreateDimension_PROTO \
-        Py_PROTO((PyNetCDFFileObject *file, char *name, long size))
+        (PyNetCDFFileObject *file, char *name, long size)
 #define PyNetCDFFile_CreateDimension_NUM 5
 
 /* Create a netCDF variable and return the variable object */
 #define PyNetCDFFile_CreateVariable_RET PyNetCDFVariableObject *
 #define PyNetCDFFile_CreateVariable_PROTO \
-      Py_PROTO((PyNetCDFFileObject *file, char *name, int typecode, \
-                char **dimension_names, int ndim))
+      (PyNetCDFFileObject *file, char *name, int typecode, \
+                char **dimension_names, int ndim)
 #define PyNetCDFFile_CreateVariable_NUM 6
 
 /* Return an object referring to an existing variable */
 #define PyNetCDFFile_GetVariable_RET PyNetCDFVariableObject *
 #define PyNetCDFFile_GetVariable_PROTO \
-	  Py_PROTO((PyNetCDFFileObject *file, char *name))
+	  (PyNetCDFFileObject *file, char *name)
 #define PyNetCDFFile_GetVariable_NUM 7
 
 /* Get variable rank */
 #define PyNetCDFVariable_GetRank_RET int
-#define PyNetCDFVariable_GetRank_PROTO Py_PROTO((PyNetCDFVariableObject *var))
+#define PyNetCDFVariable_GetRank_PROTO (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_GetRank_NUM 8
 
 /* Get variable shape */
 #define PyNetCDFVariable_GetShape_RET size_t *
-#define PyNetCDFVariable_GetShape_PROTO Py_PROTO((PyNetCDFVariableObject *var))
+#define PyNetCDFVariable_GetShape_PROTO (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_GetShape_NUM 9
 
 /* Allocate and initialize index structures for reading/writing data */
 #define PyNetCDFVariable_Indices_RET PyNetCDFIndex *
-#define PyNetCDFVariable_Indices_PROTO Py_PROTO((PyNetCDFVariableObject *var))
+#define PyNetCDFVariable_Indices_PROTO (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_Indices_NUM 10
 
 /* Read data and return an array object */
 #define PyNetCDFVariable_ReadAsArray_RET PyArrayObject *
 #define PyNetCDFVariable_ReadAsArray_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, PyNetCDFIndex *indices))
+	  (PyNetCDFVariableObject *var, PyNetCDFIndex *indices)
 #define PyNetCDFVariable_ReadAsArray_NUM 11
 
 /* Write array. Returns -1 if there was an error.  */
 #define PyNetCDFVariable_WriteArray_RET int
 #define PyNetCDFVariable_WriteArray_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, PyNetCDFIndex *indices, \
-		    PyObject *array))
+	  (PyNetCDFVariableObject *var, PyNetCDFIndex *indices, \
+		    PyObject *array)
 #define PyNetCDFVariable_WriteArray_NUM 12
 
 /* Get file attribute */
 #define PyNetCDFFile_GetAttribute_RET PyObject *
 #define PyNetCDFFile_GetAttribute_PROTO \
-	  Py_PROTO((PyNetCDFFileObject *var, char *name))
+	  (PyNetCDFFileObject *var, char *name)
 #define PyNetCDFFile_GetAttribute_NUM 13
 
 /* Set file attribute */
 #define PyNetCDFFile_SetAttribute_RET int
 #define PyNetCDFFile_SetAttribute_PROTO \
-	  Py_PROTO((PyNetCDFFileObject *var, char *name, PyObject *value))
+	  (PyNetCDFFileObject *var, char *name, PyObject *value)
 #define PyNetCDFFile_SetAttribute_NUM 14
 
 /* Set file attribute to string value */
 #define PyNetCDFFile_SetAttributeString_RET int
 #define PyNetCDFFile_SetAttributeString_PROTO \
-	  Py_PROTO((PyNetCDFFileObject *var, char *name, char *value))
+	  (PyNetCDFFileObject *var, char *name, char *value)
 #define PyNetCDFFile_SetAttributeString_NUM 15
 
 /* Get variable attribute */
 #define PyNetCDFVariable_GetAttribute_RET PyObject *
 #define PyNetCDFVariable_GetAttribute_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, char *name))
+	  (PyNetCDFVariableObject *var, char *name)
 #define PyNetCDFVariable_GetAttribute_NUM 16
 
 /* Set variable attribute */
 #define PyNetCDFVariable_SetAttribute_RET int
 #define PyNetCDFVariable_SetAttribute_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, char *name, PyObject *value))
+	  (PyNetCDFVariableObject *var, char *name, PyObject *value)
 #define PyNetCDFVariable_SetAttribute_NUM 17
 
 /* Set variable attribute to string value */
 #define PyNetCDFVariable_SetAttributeString_RET int
 #define PyNetCDFVariable_SetAttributeString_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, char *name, char *value))
+	  (PyNetCDFVariableObject *var, char *name, char *value)
 #define PyNetCDFVariable_SetAttributeString_NUM 18
 
 /* Add entry to the history */
 #define PyNetCDFFile_AddHistoryLine_RET int
 #define PyNetCDFFile_AddHistoryLine_PROTO \
-	  Py_PROTO((PyNetCDFFileObject *self, char *text))
+	  (PyNetCDFFileObject *self, char *text)
 #define PyNetCDFFile_AddHistoryLine_NUM 19
 
 /* Write string. Returns -1 if there was an error.  */
 #define PyNetCDFVariable_WriteString_RET int
+#ifdef IS_PY3K
 #define PyNetCDFVariable_WriteString_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var, PyStringObject *value))
+	  (PyNetCDFVariableObject *var, PyObject *value)
+#else
+#define PyNetCDFVariable_WriteString_PROTO \
+	  (PyNetCDFVariableObject *var, PyStringObject *value)
+#endif
 #define PyNetCDFVariable_WriteString_NUM 20
 
 /* Read string  */
+#ifdef IS_PY3K
+#define PyNetCDFVariable_ReadAsString_RET PyObject *
+#else
 #define PyNetCDFVariable_ReadAsString_RET PyStringObject *
+#endif
 #define PyNetCDFVariable_ReadAsString_PROTO \
-	  Py_PROTO((PyNetCDFVariableObject *var))
+	  (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_ReadAsString_NUM 21
 
 /* Total number of C API pointers */
@@ -209,8 +218,8 @@ typedef struct {
 #ifdef _NETCDF_MODULE
 
 /* Type object declarations */
-staticforward PyTypeObject PyNetCDFFile_Type;
-staticforward PyTypeObject PyNetCDFVariable_Type;
+static PyTypeObject PyNetCDFFile_Type;
+static PyTypeObject PyNetCDFVariable_Type;
 
 /* Type check macros */
 #define PyNetCDFFile_Check(op) ((op)->ob_type == &PyNetCDFFile_Type)
