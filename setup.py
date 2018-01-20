@@ -76,7 +76,7 @@ headers = glob(os.path.join ("Include","Scientific","*.h"))
 # headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",
-       version = "2.6.1",
+       version = "2.6.2",
        description = "Various Python modules for scientific computing",
        long_description = 
 """ScientificPython is a collection of Python modules that are useful
