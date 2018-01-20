@@ -1,0 +1,26 @@
+language: python
+python:
+  - 2.7
+#  - 3.4
+  - 3.6
+  
+addons:
+  apt:
+    packages:
+      - libnetcdf-dev
+
+cache: pip
+
+branches:
+  only:
+  - master
+  - /^1\..*/
+ 
+install:
+  - pip install -U pip setuptools wheel
+  - pip install -r requirements-build.txt
+  - pip install -e .
+
+script:
+  - pytest
+ 
