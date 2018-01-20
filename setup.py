@@ -100,7 +100,7 @@ line plots and 3D wireframe models.""",
        cmdclass = cmdclass,
        options = options,
        use_2to3 = True,
-       install_requies=[
+       install_requires=[
            'numpy>=1.6',
            'oldnumeric',
        ],
