@@ -8,6 +8,10 @@
 Rational functions in one variable
 """
 
+from __future__ import division
+
+import numpy as np
+
 from Polynomial import Polynomial
 from Scientific import N; Numeric = N
 
