@@ -13,6 +13,7 @@ from glob import glob
 from distutils.core import Extension
 from distutils.command.install_headers import install_headers
 from Cython.Build import cythonize
+from numpy.distutils.system_info import default_include_dirs, default_lib_dirs
 
 use_cython = True
 src_ext = 'pyx'
@@ -31,70 +32,17 @@ math_libraries = []
 if sys.platform != 'win32':
     math_libraries.append('m')
 
-#
-# Locate netCDF library
-#
-netcdf_prefix = None
-for arg in sys.argv[1:]:
-    if arg[:16] == "--netcdf_prefix=":
-        netcdf_prefix = arg[16:]
-        sys.argv.remove(arg)
-        break
 
-if sys.platform == 'win32':
-    netcdf_dll = None
-    for arg in sys.argv[1:]:
-        if arg[:13] == "--netcdf_dll=":
-            netcdf_dll = arg[13:]
-            sys.argv.remove(arg)
-            break
 
-if netcdf_prefix is None:
-    try:
-        netcdf_prefix=os.environ['NETCDF_PREFIX']
-    except KeyError:
-        pass
-if netcdf_prefix is None:
-    for netcdf_prefix in ['/usr/local', '/usr', '/sw']:
-        netcdf_include = os.path.join(netcdf_prefix, 'include')
-        netcdf_lib = os.path.join(netcdf_prefix, 'lib')
-        if os.path.exists(os.path.join(netcdf_include, 'netcdf.h')):
-            break
-    else:
-        netcdf_prefix = None
-
-if is_py3:
-    ext_modules = []
-elif netcdf_prefix is None:
-    raise Exception(textwrap.dedent(""""
-        If netCDF is installed somewhere on this computer,
-        please set NETCDF_PREFIX to the path where
-        include/netcdf.h and lib/netcdf.a are located
-        and re-run the build procedure.
-        """).strip())
-else:
-    if sys.platform == 'win32':
-        if netcdf_dll is None:
-            print("Option --netcdf_dll is missing")
-            raise SystemExit
-        netcdf_include = netcdf_prefix
-        netcdf_h_file = os.path.join(netcdf_prefix, 'netcdf.h')
-        netcdf_lib = netcdf_dll
-        data_files.append(('DLLs', [os.path.join(netcdf_dll, 'netcdf.dll')]))
-        scripts.append('scientific_win32_postinstall.py')
-        options['bdist_wininst'] = {'install_script': "scientific_win32_postinstall.py"}
-    else:
-        print("Using netCDF installation in ", netcdf_prefix)
-        netcdf_include = os.path.join(netcdf_prefix, 'include')
-        netcdf_h_file = os.path.join(netcdf_prefix, 'include', 'netcdf.h')
-        netcdf_lib = os.path.join(netcdf_prefix, 'lib')
-    ext_modules = [Extension('Scientific._netcdf',
-                             ['Scientific/_netcdf.c'],
-                             include_dirs=['Include', netcdf_include]
-                                          + numpy_include,
-                             library_dirs=[netcdf_lib],
-                             libraries = ['netcdf'],
-                             extra_compile_args=extra_compile_args)]
+ext_modules = [Extension('Scientific._netcdf',
+                            ['Scientific/_netcdf.c'],
+                            include_dirs=(
+                                numpy_include + default_include_dirs +
+                                ['Include']
+                            ),
+                            library_dirs=default_lib_dirs,
+                            libraries = ['netcdf'],
+                            extra_compile_args=extra_compile_args)]
 
 packages = ['Scientific', 'Scientific.Clustering', 'Scientific.Functions',
             'Scientific.Geometry', 'Scientific.IO',
@@ -135,8 +83,7 @@ class modified_install_headers(install_headers):
 cmdclass['install_headers'] = modified_install_headers
 
 headers = glob(os.path.join ("Include","Scientific","*.h"))
-if netcdf_prefix is not None and not is_py3:
-    headers.append(netcdf_h_file)
+# headers.append(netcdf_h_file)
 
 setup (name = "ScientificPython",
        version = "2.6.1",
