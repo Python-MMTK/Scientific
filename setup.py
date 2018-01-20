@@ -33,7 +33,6 @@ if sys.platform != 'win32':
     math_libraries.append('m')
 
 
-
 ext_modules = [Extension('Scientific._netcdf',
                             ['Scientific/_netcdf.c'],
                             include_dirs=(
@@ -73,15 +72,6 @@ if sys.version[:3] >= '2.1':
     packages.append('Scientific.BSP')
     scripts.append('bsp_virtual')
 
-class modified_install_headers(install_headers):
-
-    def finalize_options(self):
-        install_headers.finalize_options(self)
-        self.install_dir = \
-                os.path.join(os.path.split(self.install_dir)[0], 'Scientific')
-
-cmdclass['install_headers'] = modified_install_headers
-
 headers = glob(os.path.join ("Include","Scientific","*.h"))
 # headers.append(netcdf_h_file)
 
@@ -103,11 +93,10 @@ line plots and 3D wireframe models.""",
        license = "CeCILL-C",
 
        packages = packages,
-       headers = headers,
        ext_modules = cythonize(ext_modules),
        scripts = scripts,
        data_files = data_files,
- 
+       headers = headers,
        cmdclass = cmdclass,
        options = options,
        use_2to3 = True,
