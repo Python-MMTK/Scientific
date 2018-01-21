@@ -2222,15 +2222,16 @@ static PyMethodDef netcdf_methods[] = {
   {NULL, NULL}		/* sentinel */
 };
 
+static struct PyModuleDef netcdf_module = {
+    PyModuleDef_HEAD_INIT,
+    .m_name = "_netcdf",
+    .m_size = -1,
+    .m_methods = netcdf_methods,
+};
+
 /* Module initialization */
 
-#ifdef IS_PY3K
-PyMODINIT_FUNC
-PyInit__netcdf(void)
-#else
-DL_EXPORT(void)
-init_netcdf(void)
-#endif
+MODULE_INIT_FUNC(_netcdf)
 {
   PyObject *m;
   static void *PyNetCDF_API[PyNetCDF_API_pointers];
@@ -2252,7 +2253,7 @@ init_netcdf(void)
 #endif
 
   /* Create the module and add the functions */
-  m = Py_InitModule("Scientific._netcdf", netcdf_methods);
+  m = PyModule_Create(&netcdf_module);
 
   /* Import the array module */
   import_array();
@@ -2298,7 +2299,7 @@ init_netcdf(void)
   PyNetCDF_API[PyNetCDFFile_AddHistoryLine_NUM] =
     (void *)&PyNetCDFFile_AddHistoryLine;
   PyModule_AddObject(m, "_C_API",
-		     PyCObject_FromVoidPtr((void *)PyNetCDF_API, NULL));
+		     PyCapsule_New((void *)PyNetCDF_API, NULL, NULL));
 
   /* Add the netCDF file type object */
   Py_INCREF(&PyNetCDFFile_Type);
@@ -2307,4 +2308,6 @@ init_netcdf(void)
   /* Check for errors */
   if (PyErr_Occurred())
     Py_FatalError("can't initialize module Scientific._netcdf");
+
+  return m;
 }
