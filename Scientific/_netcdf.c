@@ -1151,7 +1151,7 @@ PyNetCDFFile_GetAttribute(PyNetCDFFileObject *self, char *name)
     }
     else {
       PyErr_Clear();
-      return Py_FindMethod(PyNetCDFFileObject_methods, (PyObject *)self, name);
+      return PyObject_GenericGetAttr((PyObject *)self, name);
     }
   }
   else
@@ -1485,7 +1485,7 @@ PyNetCDFVariable_GetAttribute(PyNetCDFVariableObject *self, char *name)
   }
   else {
     PyErr_Clear();
-    return Py_FindMethod(PyNetCDFVariableObject_methods, (PyObject *)self,name);
+    return PyObject_GenericGetAttr((PyObject *)self, name);
   }
 }
 
@@ -1903,8 +1903,9 @@ PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
     return -1;
   }
-  // FIXME
-  if (PyStr_Size((PyObject *)value) > self->dimensions[0]) {
+  Py_ssize_t str_len;
+  PyStr_AsUTF8AndSize((PyObject *)value, &str_len);
+  if (str_len > self->dimensions[0]) {
     PyErr_SetString(PyExc_ValueError, "string too long");
     return -1;
   }
