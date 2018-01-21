@@ -13,6 +13,9 @@ extern "C" {
 
 
 #include <stdio.h>
+#include "py3c/py3c.h"
+#include "py3c/capsulethunk.h"
+
 
 #if PY_VERSION_HEX < 0x02050000
 #if !defined(PY_SSIZE_T_COMPATIBILITY)
@@ -191,21 +194,12 @@ typedef struct {
 
 /* Write string. Returns -1 if there was an error.  */
 #define PyNetCDFVariable_WriteString_RET int
-#ifdef IS_PY3K
 #define PyNetCDFVariable_WriteString_PROTO \
 	  (PyNetCDFVariableObject *var, PyObject *value)
-#else
-#define PyNetCDFVariable_WriteString_PROTO \
-	  (PyNetCDFVariableObject *var, PyStringObject *value)
-#endif
 #define PyNetCDFVariable_WriteString_NUM 20
 
 /* Read string  */
-#ifdef IS_PY3K
 #define PyNetCDFVariable_ReadAsString_RET PyObject *
-#else
-#define PyNetCDFVariable_ReadAsString_RET PyStringObject *
-#endif
 #define PyNetCDFVariable_ReadAsString_PROTO \
 	  (PyNetCDFVariableObject *var)
 #define PyNetCDFVariable_ReadAsString_NUM 21

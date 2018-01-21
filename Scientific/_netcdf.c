@@ -490,11 +490,7 @@ collect_attributes(int fileid, int varid, PyObject *attributes, int nattrs)
 	release_netCDF_lock();
 	Py_END_ALLOW_THREADS;
 	s[length] = '\0';
-#ifdef IS_PY3K
-        string = PyUnicode_FromString(s);
-#else
-        string = PyString_FromString(s);
-#endif
+  string = PyStr_FromString(s);
 	free(s);
 	if (string != NULL) {
 	  PyDict_SetItemString(attributes, name, string);
@@ -542,9 +538,9 @@ set_attribute(int fileid, int varid, PyObject *attributes,
     PyDict_DelItemString(attributes, name);
     return 0;
   }
-  else if (PyString_Check(value)) {
-    Py_ssize_t len = PyString_Size(value);
-    char *string = PyString_AsString(value);
+  else if (PyStr_Check(value)) {
+    Py_ssize_t len = PyStr_Size(value);
+    char *string = PyStr_AsString(value);
     int ret;
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
@@ -733,13 +729,8 @@ open_netcdf_file(PyNetCDFFileObject *self, char *filename, char *mode)
     netcdf_signalerror(ret);
     return -1;
   }
-#ifdef IS_PY3K
-  self->name = PyUnicode_FromString(filename);
-  self->mode = PyUnicode_FromString(mode);
-#else
-  self->name = PyString_FromString(filename);
-  self->mode = PyString_FromString(mode);
-#endif
+  self->name = PyStr_FromString(filename);
+  self->mode = PyStr_FromString(mode);
   return 0;
 }
 
@@ -1010,8 +1001,8 @@ PyNetCDFFileObject_new_variable(PyNetCDFFileObject *self, PyObject *args)
   }
   for (i = 0; i < ndim; i++) {
     item = PyTuple_GetItem(dim, (Py_ssize_t)i);
-    if (PyString_Check(item))
-      dimension_names[i] = PyString_AsString(item);
+    if (PyStr_Check(item))
+      dimension_names[i] = PyStr_AsString(item);
     else {
       PyErr_SetString(PyExc_TypeError, "dimension name must be a string");
       free(dimension_names);
@@ -1189,11 +1180,7 @@ static int
 PyNetCDFFile_SetAttributeString(PyNetCDFFileObject *self,
 				char *name, char *value)
 {
-#ifdef IS_PY3K
-  PyObject *string = PyUnicode_FromString(value);
-#else
-  PyObject *string = PyString_FromString(value);
-#endif
+  PyObject *string = PyStr_FromString(value);
   if (string != NULL)
     return PyNetCDFFile_SetAttribute(self, name, string);
   else
@@ -1206,34 +1193,29 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
   static char *history = "history";
   Py_ssize_t alloc, old, new, new_alloc;
   int ret;
-#ifndef IS_PY3K
-  PyStringObject *new_string;
-#else
   PyObject* text_object;
   PyObject* new_string;
-#endif
   PyObject *h = PyNetCDFFile_GetAttribute(self, history);  /* PyUnicode */
-#ifndef IS_PY3K
   if (h == NULL) {
     PyErr_Clear();
     alloc = 0;
     old = 0;
     new = strlen(text);
   } else {
-    alloc = PyString_Size(h);
-    old = strlen(PyString_AsString(h));
+    alloc = PyStr_Size(h);
+    old = strlen(PyStr_AsString(h));
     new = old + strlen(text) + 1;
   }
   new_alloc = (new <= alloc) ? alloc : new + 500;
   new_string = (PyObject *)PyUnicode_FromStringAndSize(NULL, new_alloc);
   if (new_string) {
-    char *s = new_string->ob_sval;
+    char *s = PyStr_AsString(new_string);
     int len, ret;
     memset(s, 0, new_alloc+1);
     if (h == NULL)
       len = -1;
     else {
-      strcpy(s, PyString_AsString(h));
+      strcpy(s, PyStr_AsString(h));
       len = strlen(s);
       s[len] = '\n';
     }
@@ -1241,22 +1223,9 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
   } else {
     return -1;
   }
-#else
-   if (h == NULL) {
-       PyErr_Clear();
-   } else {
-       text_object = PyUnicode_FromString(text + '\n');
-       new_string = (PyObject *)PyUnicode_Concat(h, text);
-       Py_DECREF(text_object);
-   }
-#endif
     ret = PyNetCDFFile_SetAttribute(self, history, (PyObject *)new_string);
     Py_XDECREF(h);
-#ifdef IS_PY3K
-    Py_XDECREF(new_string);
-#else
     Py_DECREF(new_string);
-#endif
     return ret;
 }
 
@@ -1267,14 +1236,10 @@ PyNetCDFFileObject_repr(PyNetCDFFileObject *file)
   char buf[300];
   sprintf(buf, "<%s netCDF file '%.256s', mode '%.10s' at %lx>",
 	  file->open ? "open" : "closed",
-	  PyString_AsString(file->name),
-	  PyString_AsString(file->mode),
+	  PyStr_AsString(file->name),
+	  PyStr_AsString(file->mode),
 	  (long)file);
-#ifdef IS_PY3K
-  return PyUnicode_FromString(buf);
-#else
-  return PyString_FromString(buf);
-#endif
+  return PyStr_FromString(buf);
 }
 
 /* Type definition */
@@ -1430,11 +1395,7 @@ PyNetCDFVariableObject_typecode(PyNetCDFVariableObject *self, PyObject *args)
   if (!PyArg_ParseTuple(args, ""))
     return NULL;
   t = typecode(self->type);
-#ifdef IS_PY3K
-  return PyString_FromStringAndSize(&t, (Py_ssize_t)1);
-#else
-  return PyUnicode_FromStringAndSize(&t, (Py_ssize_t)1);
-#endif
+  return PyStr_FromStringAndSize(&t, (Py_ssize_t)1);
 }
 
 /* Method table */
@@ -1496,16 +1457,12 @@ PyNetCDFVariable_GetAttribute(PyNetCDFVariableObject *self, char *name)
     if (check_if_open(self->file, -1)) {
       tuple = PyTuple_New((Py_ssize_t)self->nd);
       for (i = 0; i < self->nd; i++) {
-	Py_BEGIN_ALLOW_THREADS;
-	acquire_netCDF_lock();
-	nc_inq_dimname(self->file->id, self->dimids[i], name);
-	release_netCDF_lock();
-	Py_END_ALLOW_THREADS;
-#ifdef IS_PY3K
-	PyTuple_SetItem(tuple, (Py_ssize_t)i, PyString_FromString(name));
-#else
-	PyTuple_SetItem(tuple, (Py_ssize_t)i, PyUnicode_FromString(name));
-#endif
+        Py_BEGIN_ALLOW_THREADS;
+        acquire_netCDF_lock();
+        nc_inq_dimname(self->file->id, self->dimids[i], name);
+        release_netCDF_lock();
+        Py_END_ALLOW_THREADS;
+        PyTuple_SetItem(tuple, (Py_ssize_t)i, PyUnicode_FromString(name));
       }
       return tuple;
     }
@@ -1550,11 +1507,7 @@ static int
 PyNetCDFVariable_SetAttributeString(PyNetCDFVariableObject *self,
 				    char *name, char *value)
 {
-#ifdef IS_PY3K
-  PyObject *string = PyUnicode_FromString(value);
-#else
-  PyObject *string = PyString_FromString(value);
-#endif
+  PyObject *string = PyStr_FromString(value);
   if (string != NULL)
     return PyNetCDFVariable_SetAttribute(self, name, string);
   else
@@ -1706,13 +1659,8 @@ PyNetCDFVariable_ReadAsArray(PyNetCDFVariableObject *self,
   return array;
 }
 
-#ifdef IS_PY3K
 static PyObject *
 PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
-#else
-static PyStringObject *
-PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
-#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
@@ -1725,11 +1673,7 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
     define_mode(self->file, 0);
     temp = (char *)malloc((self->dimensions[0]+1)*sizeof(char));
     if (temp == NULL)
-#ifdef IS_PY3K
       return (PyObject *)PyErr_NoMemory();
-#else
-      return (PyStringObject *)PyErr_NoMemory();
-#endif
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
     ret = nc_get_var_text(self->file->id, self->id, temp);
@@ -1741,18 +1685,10 @@ PyNetCDFVariable_ReadAsString(PyNetCDFVariableObject *self)
     }
     else {
       temp[self->dimensions[0]] = '\0';
-#ifdef IS_PY3K
-      string = PyUnicode_FromString(temp);
-#else
-      string = PyString_FromString(temp);
-#endif
+      string = PyStr_FromString(temp);
     }
     free(temp);
-#ifdef IS_PY3K
     return (PyObject *)string;
-#else
-    return (PyStringObject *)string;
-#endif
   }
   else
     return NULL;
@@ -1956,17 +1892,13 @@ PyNetCDFVariable_WriteArray(PyNetCDFVariableObject *self,
 
 static int
 PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
-#ifdef IS_PY3K
 			     PyObject *value)
-#else
-			     PyStringObject *value)
-#endif
 {
   if (self->type != PyArray_CHAR || self->nd != 1) {
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
     return -1;
   }
-  if (PyString_Size((PyObject *)value) > self->dimensions[0]) {
+  if (PyStr_Size((PyObject *)value) > self->dimensions[0]) {
     PyErr_SetString(PyExc_ValueError, "string too long");
     return -1;
   }
@@ -1976,7 +1908,7 @@ PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
     ret = nc_put_var_text(self->file->id, self->id,
-			  PyString_AsString((PyObject *)value));
+			  PyStr_AsString((PyObject *)value));
     release_netCDF_lock();
     Py_END_ALLOW_THREADS;
     if (ret != NC_NOERR) {

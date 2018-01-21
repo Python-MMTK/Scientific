@@ -13,3 +13,4 @@ Test
 MANIFEST
 HG_CHANGESET_ID
 *.egg-info
+.vscode
