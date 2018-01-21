@@ -539,8 +539,8 @@ set_attribute(int fileid, int varid, PyObject *attributes,
     return 0;
   }
   else if (PyStr_Check(value)) {
-    Py_ssize_t len = PyStr_Size(value);
-    char *string = PyStr_AsString(value);
+    Py_ssize_t len;
+    char *string = PyStr_AsUTF8AndSize(value, &len);
     int ret;
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
@@ -1151,7 +1151,7 @@ PyNetCDFFile_GetAttribute(PyNetCDFFileObject *self, char *name)
     }
     else {
       PyErr_Clear();
-      return Py_FindMethod(PyNetCDFFileObject_methods, (PyObject *)self, name);
+      return PyObject_GenericGetAttr((PyObject *)self, name);
     }
   }
   else
@@ -1202,8 +1202,8 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     old = 0;
     new = strlen(text);
   } else {
-    alloc = PyStr_Size(h);
-    old = strlen(PyStr_AsString(h));
+    char *tmp_string = PyStr_AsUTF8AndSize(h, &alloc);
+    old = strlen(tmp_string);
     new = old + strlen(text) + 1;
   }
   new_alloc = (new <= alloc) ? alloc : new + 500;
@@ -1215,9 +1215,14 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     if (h == NULL)
       len = -1;
     else {
-      strcpy(s, PyStr_AsString(h));
-      len = strlen(s);
-      s[len] = '\n';
+      #ifndef IS_PY3
+        /*
+          FIXME
+        */
+        strcpy(s, PyStr_AsString(h));
+        len = strlen(s);
+        s[len] = '\n';
+      #endif
     }
     strcpy(s+len+1, text);
   } else {
@@ -1480,7 +1485,7 @@ PyNetCDFVariable_GetAttribute(PyNetCDFVariableObject *self, char *name)
   }
   else {
     PyErr_Clear();
-    return Py_FindMethod(PyNetCDFVariableObject_methods, (PyObject *)self,name);
+    return PyObject_GenericGetAttr((PyObject *)self, name);
   }
 }
 
@@ -1898,7 +1903,9 @@ PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
     return -1;
   }
-  if (PyStr_Size((PyObject *)value) > self->dimensions[0]) {
+  Py_ssize_t str_len;
+  PyStr_AsUTF8AndSize((PyObject *)value, &str_len);
+  if (str_len > self->dimensions[0]) {
     PyErr_SetString(PyExc_ValueError, "string too long");
     return -1;
   }
@@ -2222,15 +2229,16 @@ static PyMethodDef netcdf_methods[] = {
   {NULL, NULL}		/* sentinel */
 };
 
+static struct PyModuleDef netcdf_module = {
+    PyModuleDef_HEAD_INIT,
+    .m_name = "_netcdf",
+    .m_size = -1,
+    .m_methods = netcdf_methods,
+};
+
 /* Module initialization */
 
-#ifdef IS_PY3K
-PyMODINIT_FUNC
-PyInit__netcdf(void)
-#else
-DL_EXPORT(void)
-init_netcdf(void)
-#endif
+MODULE_INIT_FUNC(_netcdf)
 {
   PyObject *m;
   static void *PyNetCDF_API[PyNetCDF_API_pointers];
@@ -2252,7 +2260,7 @@ init_netcdf(void)
 #endif
 
   /* Create the module and add the functions */
-  m = Py_InitModule("Scientific._netcdf", netcdf_methods);
+  m = PyModule_Create(&netcdf_module);
 
   /* Import the array module */
   import_array();
@@ -2298,7 +2306,7 @@ init_netcdf(void)
   PyNetCDF_API[PyNetCDFFile_AddHistoryLine_NUM] =
     (void *)&PyNetCDFFile_AddHistoryLine;
   PyModule_AddObject(m, "_C_API",
-		     PyCObject_FromVoidPtr((void *)PyNetCDF_API, NULL));
+		     PyCapsule_New((void *)PyNetCDF_API, NULL, NULL));
 
   /* Add the netCDF file type object */
   Py_INCREF(&PyNetCDFFile_Type);
@@ -2307,4 +2315,6 @@ init_netcdf(void)
   /* Check for errors */
   if (PyErr_Occurred())
     Py_FatalError("can't initialize module Scientific._netcdf");
+
+  return m;
 }
