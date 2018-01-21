@@ -539,8 +539,8 @@ set_attribute(int fileid, int varid, PyObject *attributes,
     return 0;
   }
   else if (PyStr_Check(value)) {
-    Py_ssize_t len = PyStr_Size(value);
-    char *string = PyStr_AsString(value);
+    Py_ssize_t len;
+    char *string = PyStr_AsUTF8AndSize(value, &len);
     int ret;
     Py_BEGIN_ALLOW_THREADS;
     acquire_netCDF_lock();
@@ -1202,8 +1202,8 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     old = 0;
     new = strlen(text);
   } else {
-    alloc = PyStr_Size(h);
-    old = strlen(PyStr_AsString(h));
+    char *tmp_string = PyStr_AsUTF8AndSize(h, &alloc);
+    old = strlen(tmp_string);
     new = old + strlen(text) + 1;
   }
   new_alloc = (new <= alloc) ? alloc : new + 500;
@@ -1215,9 +1215,14 @@ PyNetCDFFile_AddHistoryLine(PyNetCDFFileObject *self, char *text)
     if (h == NULL)
       len = -1;
     else {
-      strcpy(s, PyStr_AsString(h));
-      len = strlen(s);
-      s[len] = '\n';
+      #ifndef IS_PY3
+        /*
+          FIXME
+        */
+        strcpy(s, PyStr_AsString(h));
+        len = strlen(s);
+        s[len] = '\n';
+      #endif
     }
     strcpy(s+len+1, text);
   } else {
@@ -1898,6 +1903,7 @@ PyNetCDFVariable_WriteString(PyNetCDFVariableObject *self,
     PyErr_SetString(PyExc_IOError, "netcdf: not a string variable");
     return -1;
   }
+  // FIXME
   if (PyStr_Size((PyObject *)value) > self->dimensions[0]) {
     PyErr_SetString(PyExc_ValueError, "string too long");
     return -1;
