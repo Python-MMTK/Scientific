@@ -4,7 +4,6 @@ import os
 import sys
 import platform
 import pkginfo
-import numpy.distutils.misc_util
 import textwrap
 
 from setuptools import setup
@@ -13,30 +12,45 @@ from glob import glob
 from distutils.core import Extension
 from distutils.command.install_headers import install_headers
 from Cython.Build import cythonize
+from wheel.paths import get_install_paths
+
 from numpy.distutils.system_info import default_include_dirs, default_lib_dirs
+from numpy.distutils.misc_util import get_numpy_include_dirs
+from sysconfig import get_paths
 
 use_cython = True
 src_ext = 'pyx'
 
 cmdclass = {}
 extra_compile_args = ["-DNUMPY=1"]
-numpy_include = []
+include_dirs = []
 data_files = []
 scripts = []
 options = {}
 is_py3 = False
 
-numpy_include = numpy.distutils.misc_util.get_numpy_include_dirs()
+def get_wheel_header_paths():
+    return [os.path.dirname(get_install_paths('dummy')['headers'])]
+
+
+py3c_include_dirs = get_wheel_header_paths() + \
+    [get_paths()['include']] + \
+    [get_paths()['platinclude']]
+numpy_include_dirs = get_numpy_include_dirs()
+netcdf_include_dirs = default_include_dirs
+
+
+include_dirs = ['Include'] + py3c_include_dirs + numpy_include_dirs + \
+    netcdf_include_dirs
 
 math_libraries = []
 if sys.platform != 'win32':
     math_libraries.append('m')
 
-
 ext_modules = [Extension('Scientific._netcdf',
                             ['Scientific/_netcdf.c'],
                             include_dirs=(
-                                numpy_include + default_include_dirs +
+                                include_dirs + default_include_dirs +
                                 ['Include']
                             ),
                             library_dirs=default_lib_dirs,
@@ -53,17 +67,17 @@ packages = ['Scientific', 'Scientific.Clustering', 'Scientific.Functions',
 
 ext_modules.append(Extension('Scientific._vector',
                              ['Scientific/_vector.%s' % src_ext],
-                             include_dirs=['Include']+numpy_include,
+                             include_dirs=['Include']+include_dirs,
                              libraries=math_libraries,
                              extra_compile_args=extra_compile_args))
 ext_modules.append(Extension('Scientific._affinitypropagation',
                              ['Scientific/_affinitypropagation.%s' % src_ext],
-                             include_dirs=['Include']+numpy_include,
+                             include_dirs=['Include']+include_dirs,
                              libraries=math_libraries,
                              extra_compile_args=extra_compile_args))
 ext_modules.append(Extension('Scientific._interpolation',
                              ['Scientific/_interpolation.%s' % src_ext],
-                             include_dirs=['Include']+numpy_include,
+                             include_dirs=['Include']+include_dirs,
                              libraries=math_libraries,
                              extra_compile_args=extra_compile_args))
 
