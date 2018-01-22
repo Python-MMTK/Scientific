@@ -366,8 +366,8 @@ if __name__ == '__main__':
             return self.e1 # initial focus
 
         def apply(self):
-            first = string.atoi(self.e1.get())
-            second = string.atoi(self.e2.get())
+            first = int(self.e1.get())
+            second = int(self.e2.get())
             self.result = first, second
 
     root = Tkinter.Tk()
