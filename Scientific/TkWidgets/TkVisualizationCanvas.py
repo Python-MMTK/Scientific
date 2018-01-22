@@ -178,9 +178,9 @@ class VisualizationCanvas(Tkinter.Frame):
                                      background=background)
         self.canvas.pack(fill=Tkinter.BOTH, expand=Tkinter.YES)
         border_w = self.canvas.winfo_reqwidth() - \
-                   string.atoi(self.canvas.cget('width'))
+                   int(self.canvas.cget('width'))
         border_h = self.canvas.winfo_reqheight() - \
-                   string.atoi(self.canvas.cget('height'))
+                   int(self.canvas.cget('height'))
         self.border = (border_w, border_h)
         self.canvas.bind('<Configure>', self.reconfigure)
         self.canvas.bind('<1>', self.clickhandler1)
@@ -199,8 +199,8 @@ class VisualizationCanvas(Tkinter.Frame):
     def reconfigure(self, event):
         new_width = event.width-self.border[0]
         new_height = event.height-self.border[1]
-        width = string.atoi(self.canvas.cget('width'))
-        height = string.atoi(self.canvas.cget('height'))
+        width = int(self.canvas.cget('width'))
+        height = int(self.canvas.cget('height'))
         if new_width == width and new_height == height:
             return
         self.canvas.configure(width=new_width, height=new_height)
@@ -209,8 +209,8 @@ class VisualizationCanvas(Tkinter.Frame):
         self.redraw()
 
     def _setsize(self):
-        self.width = string.atoi(self.canvas.cget('width'))
-        self.height = string.atoi(self.canvas.cget('height'))
+        self.width = int(self.canvas.cget('width'))
+        self.height = int(self.canvas.cget('height'))
         self.plotbox_size = 0.97*N.array([self.width, -self.height])
         xo = 0.5*(self.width-self.plotbox_size[0])
         yo = self.height-0.5*(self.height+self.plotbox_size[1])

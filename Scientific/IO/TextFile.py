@@ -13,8 +13,8 @@ import os, string, sys
 # Use the gzip module for Python version 1.5.2 or higher
 gzip = None
 try:
-    _version = map(string.atoi,
-                   string.split(string.split(sys.version)[0], '.'))
+    _version = map(int,
+                   ((sys.version).split()[0], '.').split())
     if _version >= [1, 5, 2]:
         try:
             import gzip
@@ -49,7 +49,7 @@ class TextFile:
         @type mode: C{str}
         """
         self.file = None
-        if string.find(filename, ':/') > 1: # URL
+        if filename.find(':/') > 1: # URL
             if mode != 'r':
                 raise IOError("can't write to a URL")
             import urllib
