@@ -8,6 +8,8 @@
 Geometrical objects in 3D space
 """
 
+import six
+
 from Scientific.Geometry import Vector
 from Scientific import N; Numeric = N
 
@@ -258,7 +260,10 @@ class Line(GeometricalObject3D):
 # Intersection calculations
 #
 def _addIntersectFunction(f, class1, class2):
-    switch = class1 > class2
+    if six.PY2:
+        switch = class1 > class2
+    else:
+        switch = class1.__name__ > class2.__name__
     if switch:
         class1, class2 = class2, class1
     _intersectTable[(class1, class2)] = (f, switch)
