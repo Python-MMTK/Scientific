@@ -341,7 +341,7 @@ if __name__ == '__main__':
             record_type = FortranLine(line, generic_format)[0]
             if record_type == 'ATOM  ' or record_type == 'HETATM':
                 data = FortranLine(line, atom_format)
-                atom_name = string.strip(data[2])
+                atom_name = (data[2]).strip()
                 position = N.array(data[8:11])
                 if atom_name == 'CA':
                     positions.append(position)

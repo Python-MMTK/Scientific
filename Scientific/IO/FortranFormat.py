@@ -150,7 +150,7 @@ class FortranLine:
         @returns: C{True} if the line contains only whitespace
         @rtype: C{bool}
         """
-        return len(string.strip(self.text)) == 0
+        return len((self.text).strip()) == 0
 
     def _input(self):
         text = self.text
@@ -165,7 +165,7 @@ class FortranLine:
             if type == 'A':
                 value = s
             elif type == 'I':
-                s = string.strip(s)
+                s = (s).strip()
                 if len(s) == 0:
                     value = 0
                 else:
@@ -178,7 +178,7 @@ class FortranLine:
                     except:
                         value = None
             elif type == 'D' or type == 'E' or type == 'F' or type == 'G':
-                s = string.lower(string.strip(s))
+                s = string.lower((s).strip())
                 n = string.find(s, 'd')
                 if n >= 0:
                     s = s[:n] + 'e' + s[n+1:]
@@ -252,7 +252,7 @@ class FortranFormat:
         @param nested: I{for internal use}
         """
         fields = []
-        format = string.strip(format)
+        format = (format).strip()
         while format and format[0] != ')':
             n = 0
             while format[0] in string.digits:
@@ -265,7 +265,7 @@ class FortranFormat:
                 text = format[1:eof]
                 format = format[eof+1:]
             else:
-                format = string.strip(format[1:])
+                format = (format[1:]).strip()
             if type == '(':
                 subformat = FortranFormat(format, 1)
                 fields = fields + n*subformat.fields

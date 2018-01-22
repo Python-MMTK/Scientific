@@ -9,7 +9,7 @@ def getUserName():
     except ImportError:
         return 'unknown user'
     pwd_entry = pwd.getpwuid(os.getuid())
-    name = string.strip(string.splitfields(pwd_entry[4], ',')[0])
+    name = (string.splitfields(pwd_entry[4], ',')[0]).strip()
     if name == '':
         name = pwd_entry[0]
     return name
