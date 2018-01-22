@@ -110,7 +110,7 @@ class PhysicalQuantity:
             self.value = args[0]
             self.unit = _findUnit(args[1])
         else:
-            s = string.strip(args[0])
+            s = (args[0]).strip()
             match = PhysicalQuantity._number.match(s)
             if match is None:
                 raise TypeError('No number found')
@@ -557,7 +557,7 @@ def isPhysicalQuantity(x):
 
 def _findUnit(unit):
     if type(unit) == type(''):
-        name = string.strip(unit)
+        name = (unit).strip()
         unit = eval(name, _unit_table)
         for cruft in ['__builtins__', '__args__']:
             try: del _unit_table[cruft]

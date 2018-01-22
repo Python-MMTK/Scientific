@@ -6,7 +6,7 @@ import operator, string
 # The local and global input functions.
 def input():
     data = open('numbers').readlines()
-    numbers = map(string.atoi, map(string.strip, data))
+    numbers = [int(line.strip()) for line in data]
     chunk_size = (len(numbers)+numberOfProcessors-1)/numberOfProcessors
     chunks = []
     for i in range(numberOfProcessors):
