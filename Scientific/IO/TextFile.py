@@ -14,7 +14,7 @@ import os, string, sys
 gzip = None
 try:
     _version = map(int,
-                   string.split(string.split(sys.version)[0], '.'))
+                   ((sys.version).split()[0], '.').split())
     if _version >= [1, 5, 2]:
         try:
             import gzip

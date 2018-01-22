@@ -193,7 +193,7 @@ def ColorByName(name):
     @rtype: L{Color}
     @raises KeyError: if the color name is not defined
     """
-    name = string.split(string.lower(name))
+    name = (string.lower(name)).split()
     dict = _full_colors
     if len(name) == 2:
         if name[0] == 'light':
