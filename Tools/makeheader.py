@@ -94,7 +94,7 @@ while index < len(exports):
 header.write("}\n\n")
 
 header.write("#else\n\n")
-linkage = "%s_API_LINKAGE" % (string.upper(prefix),)
+linkage = "%s_API_LINKAGE" % ((prefix).upper(),)
 header.write("#ifndef %s\n" % linkage)
 header.write("#define %s static\n" % linkage)
 header.write("#endif\n\n")

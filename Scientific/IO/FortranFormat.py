@@ -225,7 +225,7 @@ class FortranLine:
                         s = ('%'+`length`+'.'+`fraction`+'g') % value
                     else:
                         raise ValueError('Not yet implemented')
-                    s = string.upper(s)
+                    s = s.upper()
                     self.text = self.text + ((length*' ')+s)[-length:]
         self.text = string.rstrip(self.text)
 
@@ -259,7 +259,7 @@ class FortranFormat:
                 n = 10*n + string.atoi(format[0])
                 format = format[1:]
             if n == 0: n = 1
-            type = string.upper(format[0])
+            type = (format[0]).upper()
             if type == "'":
                 eof = string.find(format, "'", 1)
                 text = format[1:eof]
