@@ -49,7 +49,7 @@ class TextFile:
         @type mode: C{str}
         """
         self.file = None
-        if string.find(filename, ':/') > 1: # URL
+        if filename.find(':/') > 1: # URL
             if mode != 'r':
                 raise IOError("can't write to a URL")
             import urllib

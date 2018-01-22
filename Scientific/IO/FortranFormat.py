@@ -179,7 +179,7 @@ class FortranLine:
                         value = None
             elif type == 'D' or type == 'E' or type == 'F' or type == 'G':
                 s = string.lower((s).strip())
-                n = string.find(s, 'd')
+                n = s.find('d')
                 if n >= 0:
                     s = s[:n] + 'e' + s[n+1:]
                 if len(s) == 0:
@@ -215,7 +215,7 @@ class FortranLine:
                         s = `value`
                     elif type == 'D':
                         s = ('%'+`length`+'.'+`fraction`+'e') % value
-                        n = string.find(s, 'e')
+                        n = s.find('e')
                         s = s[:n] + 'D' + s[n+1:]
                     elif type == 'E':
                         s = ('%'+`length`+'.'+`fraction`+'e') % value
@@ -261,7 +261,7 @@ class FortranFormat:
             if n == 0: n = 1
             type = (format[0]).upper()
             if type == "'":
-                eof = string.find(format, "'", 1)
+                eof = format.find("'", 1)
                 text = format[1:eof]
                 format = format[eof+1:]
             else:
@@ -270,16 +270,16 @@ class FortranFormat:
                 subformat = FortranFormat(format, 1)
                 fields = fields + n*subformat.fields
                 format = subformat.rest
-                eof = string.find(format, ',')
+                eof = format.find(',')
                 if eof >= 0:
                     format = format[eof+1:]
             else:
-                eof = string.find(format, ',')
+                eof = format.find(',')
                 if eof >= 0:
                     field = format[:eof]
                     format = format[eof+1:]
                 else:
-                    eof = string.find(format, ')')
+                    eof = format.find(')')
                     if eof >= 0:
                         field = format[:eof]
                         format = format[eof+1:]
@@ -289,7 +289,7 @@ class FortranFormat:
                 if type == "'":
                     field = (type, text)
                 else:
-                    dot = string.find(field, '.')
+                    dot = field.find('.')
                     if dot > 0:
                         length = string.atoi(field[:dot])
                         fraction = string.atoi(field[dot+1:])
