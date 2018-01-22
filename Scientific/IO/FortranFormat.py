@@ -178,7 +178,7 @@ class FortranLine:
                     except:
                         value = None
             elif type == 'D' or type == 'E' or type == 'F' or type == 'G':
-                s = string.lower((s).strip())
+                s = ((s).strip()).lower()
                 n = s.find('d')
                 if n >= 0:
                     s = s[:n] + 'e' + s[n+1:]
