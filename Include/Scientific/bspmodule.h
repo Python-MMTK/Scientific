@@ -12,11 +12,11 @@
 extern "C" {
 #endif
 
-#include "Scientific/arrayobject.h"
+#include "ScientificPython/arrayobject.h"
 #include "bsp.h"
 
 /* Include the automatically generated API definitions */
-#include "Scientific/PyBSP_API.h"
+#include "ScientificPython/PyBSP_API.h"
 
 /* Tag type and size for sending Python objects */
 typedef enum {PyBSP_StringTag,

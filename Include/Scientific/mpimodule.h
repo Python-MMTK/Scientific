@@ -18,7 +18,7 @@
    method.
 
    If possible, use the PyMPI functions defined in
-   Scientific/PyMPI_API.h .  They take a Python communicator object as
+   ScientificPython/PyMPI_API.h .  They take a Python communicator object as
    their first argument.
 
    In some cases, e.g. when using source code shared between a Python
@@ -41,10 +41,10 @@
    The PyMPI_API array of pointers must be shared and cannot therefore
    be declared static. In all file except one, write
        #define PYMPI_API_LINKAGE extern
-       #include "Scientific/mpimodule.h"
+       #include "ScientificPython/mpimodule.h"
    and in one file (e.g. where the module initialization is), write
        #define PYMPI_API_LINKAGE
-       #include "Scientific/mpimodule.h"
+       #include "ScientificPython/mpimodule.h"
    Again, remember to call import_mpi() in the module initialization
    code.
    
@@ -53,7 +53,7 @@
    Python.  This is probably harmless, but can be avoided by changing
    the name of the array, e.g. by writing
        #define PyMPI_API PyMPI_API_MYMODULENAME
-   before Scientific/mpimodule.h is included (this must of course be
+   before ScientificPython/mpimodule.h is included (this must of course be
    done in _all_ .c files in your extension module).
 
    TROUBLESHOOTING:
@@ -76,7 +76,7 @@
    EXTENDING THE LIST OF EXPORTED MPI FUNCTIONS:  
    Add the missing functions to the end of Src/Scientific_mpi.export,
    (the syntax should be obvious).  Then run makeheader.py, and copy
-   the resulting PyMPI_API.h file to Scientific/Includes/Scientific .
+   the resulting PyMPI_API.h file to ScientificPython/Includes/Scientific .
    IMPORTANT: Remember to rebuild the python executable containing
    Scientific.MPI (mpipython) and ALL your own modules using MPI!
 */
@@ -85,7 +85,7 @@
 extern "C" {
 #endif
 
-#include "Scientific/arrayobject.h"
+#include "ScientificPython/arrayobject.h"
 #include "mpi.h"
 
 #ifndef MPI_VERSION
@@ -144,7 +144,7 @@ typedef struct {
 	((v)->ob_type == &PyMPIOperation_Type)
 
 /* Include the automatically generated API definitions */
-#include "Scientific/PyMPI_API.h"
+#include "ScientificPython/PyMPI_API.h"
 
 #ifdef __cplusplus
 }
