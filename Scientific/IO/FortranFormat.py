@@ -186,7 +186,7 @@ class FortranLine:
                     value = 0.
                 else:
                     try:
-                        value = string.atof(s)
+                        value = float(s)
                     except:
                         value = None
             if value is not None:
