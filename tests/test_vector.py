@@ -77,6 +77,14 @@ class VectorTest(unittest.TestCase):
         self.assertTrue(isVector(v2))
         self.assertFalse(isVector(0.))
         self.assertFalse(isVector("string"))
+
+    def testVectorRotation(self):
+        from Scientific.Geometry import Vector, Transformation
+        # check regression
+        axis_direction = Vector(0.000000,1.000000,1.000000)
+        angle = 0.7
+
+        Transformation.Rotation(axis_direction, angle)
                                
     def shouldFail(self, Vector, isVector):
         # Create vector objects
