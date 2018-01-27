@@ -104,6 +104,10 @@ cdef class vector:
         cdef int rmul
         from Scientific import Geometry
         rmul = 0
+        if isinstance(x, np.ndarray):
+            x = Geometry.Tensor(x)
+        if isinstance(y, np.ndarray):
+            y = Geometry.Tensor(y)
         if isinstance(y, vector):
             if isinstance(x, vector):
                 v1 = x
