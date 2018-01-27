@@ -55,6 +55,8 @@ class Tensor:
         return str(self.array)
 
     def __add__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         return Tensor(self.array+other.array, 1)
     __radd__ = __add__
 
@@ -62,12 +64,18 @@ class Tensor:
         return Tensor(-self.array, 1)
 
     def __sub__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         return Tensor(self.array-other.array, 1)
 
     def __rsub__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         return Tensor(other.array-self.array, 1)
 
     def __mul__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         from Scientific import Geometry
         if isTensor(other):
             a = self.array[self.rank*(slice(None),)+(N.NewAxis,)]
@@ -79,9 +87,13 @@ class Tensor:
             return Tensor(self.array*other, 1)
 
     def __rmul__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         return Tensor(self.array*other, 1)
 
     def __div__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         if isTensor(other):
             raise TypeError("Can't divide by a tensor")
         else:
@@ -93,6 +105,8 @@ class Tensor:
         raise TypeError("Can't divide by a tensor")
 
     def __cmp__(self, other):
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         if not isTensor(other):
             return NotImplemented
         if self.rank != other.rank:
@@ -128,6 +142,8 @@ class Tensor:
         @returns: the contraction with other
         @rtype: L{Tensor}
         """
+        if isinstance(other, np.ndarray):
+            other = Tensor(other)
         if isTensor(other):
             a = self.array
             b =  N.transpose(other.array, range(1, other.rank)+[0])
