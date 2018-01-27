@@ -2249,10 +2249,10 @@ MODULE_INIT_FUNC(_netcdf)
   /* Initialize type objects */
   PyNetCDFFile_Type.tp_new = PyType_GenericNew;
   if (PyType_Ready(&PyNetCDFFile_Type) < 0)
-    return;
+    return NULL;
   PyNetCDFVariable_Type.tp_new = PyType_GenericNew;
   if (PyType_Ready(&PyNetCDFVariable_Type) < 0)
-    return;
+    return NULL;
 
   /* Create netCDF lock */
 #ifdef WITH_THREAD
@@ -2262,8 +2262,12 @@ MODULE_INIT_FUNC(_netcdf)
   /* Create the module and add the functions */
   m = PyModule_Create(&netcdf_module);
 
+#ifndef IS_PY3
+  import_array1(NULL);
+#else
   /* Import the array module */
   import_array();
+#endif
 
   /* Initialize C API pointer array and store in module */
   PyNetCDF_API[PyNetCDFFile_Type_NUM] = (void *)&PyNetCDFFile_Type;
